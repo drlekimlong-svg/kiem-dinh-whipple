@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="format-detection" content="telephone=no">
+<title>Kiểm định sổ theo dõi Whipple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,650&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Bố cục: một cột tài liệu rộng ~1000px; thanh điều hướng dính trên cùng có tiến độ chấm; mỗi mục kiểm định là một khối có hàng nút chấm 1–4 ở dưới (biến dữ liệu: nút nằm bên phải). */
+:root{
+  --bg:#F2F5F5; --surface:#FFFFFF; --soft:#E7EEEE; --ink:#14272B; --muted:#56696D; --line:#D3DEDF;
+  --accent:#0D666C; --accent-soft:#DDEDED; --on-accent:#FFFFFF;
+  --band:#0F3A3F; --band-ink:#E9F3F2; --band-muted:#A9C6C4;
+  --ochre:#8E5B0E; --ochre-soft:#F5E9D3;
+  --s1:#B3261E; --s2:#C25E0A; --s3:#3C7F70; --s4:#1E6B3E;
+  --f-head:"Literata", Georgia, "Times New Roman", serif;
+  --f-body:"Be Vietnam Pro", "Segoe UI", Roboto, Arial, sans-serif;
+  --f-mono:"JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1719; --surface:#152225; --soft:#1C2C2F; --ink:#E2ECEC; --muted:#93A6A8; --line:#29393C;
+    --accent:#5DB8BD; --accent-soft:#183B3E; --on-accent:#0B1A1C;
+    --band:#0A2B2F; --band-ink:#E2F0EF; --band-muted:#8FB3B1;
+    --ochre:#E2A852; --ochre-soft:#3A2D17;
+    --s1:#E2675E; --s2:#E58B3C; --s3:#5FB09D; --s4:#4FB477;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1719; --surface:#152225; --soft:#1C2C2F; --ink:#E2ECEC; --muted:#93A6A8; --line:#29393C;
+  --accent:#5DB8BD; --accent-soft:#183B3E; --on-accent:#0B1A1C;
+  --band:#0A2B2F; --band-ink:#E2F0EF; --band-muted:#8FB3B1;
+  --ochre:#E2A852; --ochre-soft:#3A2D17;
+  --s1:#E2675E; --s2:#E58B3C; --s3:#5FB09D; --s4:#4FB477;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,5vw,40px);font-weight:650;line-height:1.15}
+h2{font-size:26px;font-weight:650;line-height:1.2}
+h3{font-size:19px;font-weight:650;margin-top:28px;margin-bottom:10px}
+h4{font-size:16px;font-weight:600;margin:0 0 6px}
+p{margin:0 0 8px}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:13px}
+.top{background:var(--band);color:var(--band-ink)}
+.top .wrap{padding-block:28px 22px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--band-muted);margin-bottom:10px}
+.top .lead{max-width:68ch;color:var(--band-ink);opacity:.92;margin-top:12px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;gap:12px;align-items:center;justify-content:space-between;padding-block:6px}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{white-space:nowrap;text-decoration:none;color:var(--muted);font-weight:500;font-size:14px;padding:6px 10px;border-radius:6px}
+.tabs a:hover{background:var(--soft);color:var(--ink)}
+.prog{display:flex;align-items:center;gap:8px;flex-shrink:0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pbar{width:90px;height:6px;background:var(--soft);border-radius:3px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--accent)}
+.legend{font-size:12px;color:var(--muted);padding-block:0 6px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.legend b{font-weight:600;color:var(--ink)}
+.sec{padding-block:34px 8px}
+.sec-n{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.sec-h{margin-bottom:8px}
+.sec-h .lead{max-width:70ch;color:var(--muted);margin-top:8px}
+.list{display:flex;flex-direction:column;gap:10px}
+.it{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.it.done{border-color:var(--accent)}
+.it p:last-of-type{margin-bottom:0}
+.it ul,.it ol{margin:4px 0 0;padding-left:20px}
+.it li{margin:2px 0}
+.kv{display:grid;grid-template-columns:110px minmax(0,1fr);gap:2px 12px;font-size:14px;margin-top:4px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+.flag{display:inline-block;font-size:12px;font-weight:500;padding:1px 8px;border-radius:999px;background:var(--ochre-soft);color:var(--ochre);vertical-align:2px;margin-left:6px}
+.tb{overflow-x:auto;margin-top:6px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:13px;background:var(--soft)}
+td.c,th.c{text-align:center}
+.num{font-variant-numeric:tabular-nums}
+.note{font-size:13px;color:var(--muted)}
+/* nút chấm */
+.rv{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin-top:12px}
+.sc,.lvs{display:flex;gap:4px}
+.sb{width:36px;height:34px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;font:600 15px var(--f-body);cursor:pointer}
+.sb:hover{border-color:var(--muted)}
+.sb.s1[aria-pressed="true"]{background:var(--s1);border-color:var(--s1);color:#fff}
+.sb.s2[aria-pressed="true"]{background:var(--s2);border-color:var(--s2);color:#fff}
+.sb.s3[aria-pressed="true"]{background:var(--s3);border-color:var(--s3);color:#fff}
+.sb.s4[aria-pressed="true"]{background:var(--s4);border-color:var(--s4);color:#fff}
+.lb,.cb,.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;font:500 13px var(--f-body);padding:6px 10px;cursor:pointer;min-height:34px}
+.lb[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.cb.has{border-color:var(--accent);color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.btn:hover,.lb:hover,.cb:hover{border-color:var(--muted)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gt{flex-basis:100%;width:100%;font:14px/1.45 var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;resize:vertical}
+/* biến dữ liệu */
+.vlist{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.v{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:start;padding:10px 14px}
+.v .rv{margin-top:0;justify-content:flex-end;max-width:420px}
+.vh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vh code{color:var(--accent);font-weight:600}
+.vn{font-weight:600;margin-top:2px}
+.vt{font-size:14px;color:var(--ink)}
+.vnote{font-size:13px;color:var(--muted)}
+.lv{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;letter-spacing:.02em}
+.lv-C{background:var(--accent-soft);color:var(--accent)}
+.lv-M{background:var(--ochre-soft);color:var(--ochre)}
+.vsub{font-family:var(--f-body);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 2px}
+details.form{background:transparent;border-top:1px solid var(--line);padding-block:4px}
+details.form>summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline;padding:10px 0;flex-wrap:wrap}
+details.form>summary::-webkit-details-marker{display:none}
+details.form>summary:before{content:"+";font:600 16px var(--f-mono);color:var(--accent);width:14px}
+details.form[open]>summary:before{content:"−"}
+.fcode{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:600}
+.fname{font-family:var(--f-head);font-size:18px;font-weight:650}
+.fprog{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:auto}
+.fdesc,.ffoot{font-size:14px;color:var(--muted);max-width:75ch}
+.bulk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+/* thông tin người kiểm định, gửi */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
+input[type=text],input[type=number],select,textarea.fld{font:15px var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+textarea.fld{min-height:84px;resize:vertical}
+.scale-ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:8px}
+.scale-ex div{display:flex;gap:8px;align-items:center;font-size:14px}
+.dot{width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:600;flex-shrink:0}
+.status{font-size:13px;color:var(--muted)}
+.msg{margin-top:10px;font-size:14px}
+.msg.ok{color:var(--s4)}
+.msg.bad{color:var(--s1)}
+.codebox{width:100%;font:12px/1.4 var(--f-mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px;min-height:90px;word-break:break-all}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.kpi b{display:block;font-family:var(--f-head);font-size:26px;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--muted)}
+.bad-t{color:var(--s1);font-weight:600}
+.ok-t{color:var(--s4);font-weight:600}
+.dist{display:inline-flex;gap:2px;font-variant-numeric:tabular-nums;font-size:12px}
+.dist i{font-style:normal;min-width:20px;text-align:center;border-radius:3px;padding:0 3px;background:var(--soft)}
+.cm{font-size:13px;margin:2px 0}
+.cm b{font-weight:600}
+footer{color:var(--muted);font-size:13px;padding-block:28px 40px}
+@media (max-width:700px){
+  .v{grid-template-columns:minmax(0,1fr)}
+  .v .rv{justify-content:flex-start;max-width:none}
+  .kv{grid-template-columns:minmax(0,1fr)}
+  .kv dt{margin-top:6px}
+  .pbar{width:60px}
+}
+.inl{flex-direction:row;align-items:center;gap:6px}
+@media (pointer:coarse){.sb{width:42px;height:40px}.lb,.cb,.btn{min-height:40px}}
+.top .wrap{padding-top:max(28px,env(safe-area-inset-top,0px))}
+footer{padding-bottom:max(40px,env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Khoa Ngoại · Bệnh viện An Bình · Vòng kiểm định 1 · bản nháp 20/10/2026</p>
+    <h1>Kiểm định sổ theo dõi Whipple</h1>
+    <p class="lead">Nội dung chuyên môn cho sổ theo dõi người bệnh cắt khối tá tụy (pancreatoduodenectomy): chỉ định, định nghĩa kết cục, lịch tái khám, từ điển dữ liệu và cách tổ chức phần mềm. Xin quý đồng nghiệp chấm mức phù hợp của từng mục và ghi đề nghị sửa trước khi nhóm bắt đầu viết phần mềm.</p>
+  </div>
+</header>
+
+<nav class="bar" aria-label="Các phần">
+  <div class="wrap bar-in">
+    <div class="tabs">
+      <a href="#huong-dan">Hướng dẫn</a>
+      <a href="#s1">1 Chỉ định</a>
+      <a href="#s2">2 Định nghĩa</a>
+      <a href="#s3">3 Lịch tái khám</a>
+      <a href="#s4">4 Từ điển dữ liệu</a>
+      <a href="#s5">5 Phần mềm</a>
+      <a href="#gui">Gửi kết quả</a>
+      <a href="#tong-hop" id="tab_th" hidden>Tổng hợp</a>
+    </div>
+    <div class="prog" title="Số mục đã chấm"><div class="pbar"><i id="pfill"></i></div><span id="ptext">0/0</span></div>
+  </div>
+  <div class="wrap legend"><span><b>1</b> Không phù hợp</span><span><b>2</b> Cần sửa nhiều</span><span><b>3</b> Cần sửa ít</span><span><b>4</b> Rất phù hợp</span></div>
+</nav>
+
+<main>
+<!-- ============ HƯỚNG DẪN ============ -->
+<section id="huong-dan" class="sec wrap">
+  <div class="sec-h"><h2>Hướng dẫn kiểm định</h2></div>
+  <div class="list">
+    <div class="panel">
+      <p>Mỗi mục có bốn nút chấm <b>mức phù hợp</b> với thực hành và mục đích của sổ theo dõi:</p>
+      <div class="scale-ex">
+        <div><span class="dot" style="background:var(--s1)">1</span>Không phù hợp, nên bỏ</div>
+        <div><span class="dot" style="background:var(--s2)">2</span>Phù hợp một phần, cần sửa nhiều</div>
+        <div><span class="dot" style="background:var(--s3)">3</span>Phù hợp, cần sửa ít</div>
+        <div><span class="dot" style="background:var(--s4)">4</span>Rất phù hợp, giữ nguyên</div>
+      </div>
+      <p style="margin-top:12px">Với <b>biến dữ liệu</b> (phần 4) có thêm lựa chọn cấp: <b>Cốt lõi</b> (bắt buộc ở mọi bệnh viện), <b>Mở rộng</b> (tùy chọn) hoặc <b>Bỏ</b>. Không bấm thì hiểu là đồng ý cấp đang đề xuất. Chấm 1 hoặc 2 thì xin ghi ngắn lý do vào ô <b>Ghi chú</b>.</p>
+      <p>Quý đồng nghiệp có thể chỉ chấm những phần thuộc chuyên môn của mình. Trình duyệt tự lưu nháp trên máy đang dùng, nên xin dùng cùng một máy và một trình duyệt cho đến khi gửi. Chấm xong, vào mục <a href="#gui">Gửi kết quả</a> để lấy file JSON và gửi cho BS. Lê Kim Long qua Zalo hoặc email.</p>
+      <p class="note">Trang không chứa thông tin người bệnh. Điểm chấm chỉ lưu trong trình duyệt trên máy của quý đồng nghiệp, không gửi đi đâu cho tới khi quý đồng nghiệp tự gửi file kết quả.</p>
+    </div>
+    <div class="panel">
+      <h4>Thông tin người kiểm định</h4>
+      <div class="grid2" style="margin-top:8px">
+        <label for="i_ten">Họ tên<input type="text" id="i_ten" data-info="ten" autocomplete="name"></label>
+        <label for="i_hv">Học hàm, học vị, chức danh<input type="text" id="i_hv" data-info="hv" placeholder="vd ThS. BS. CKII"></label>
+        <label for="i_noi">Nơi công tác<input type="text" id="i_noi" data-info="noi"></label>
+        <label for="i_cn">Chuyên ngành
+          <select id="i_cn" data-info="cn">
+            <option value="">– chọn –</option>
+            <option>Ngoại gan mật tụy</option>
+            <option>Ngoại tiêu hóa</option>
+            <option>Ngoại chung</option>
+            <option>Ung bướu</option>
+            <option>Giải phẫu bệnh</option>
+            <option>Chẩn đoán hình ảnh</option>
+            <option>Nội tiêu hóa</option>
+            <option>Gây mê hồi sức</option>
+            <option>Dịch tễ – thống kê</option>
+            <option>Điều dưỡng</option>
+            <option>Khác</option>
+          </select>
+        </label>
+        <label for="i_nam">Số năm kinh nghiệm chuyên ngành<input type="number" id="i_nam" data-info="nam" min="0" max="60" inputmode="numeric"></label>
+        <label for="i_pd">Số ca cắt khối tá tụy đã tham gia (ước tính)<input type="number" id="i_pd" data-info="pd" min="0" max="5000" inputmode="numeric"></label>
+      </div>
+      <p class="status" id="st_line" style="margin-top:10px">Bản nháp tự lưu trên máy này.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PHẦN 1 ============ -->
+<section id="s1" class="sec wrap" data-sec="1">
+  <div class="sec-h"><span class="sec-n">Phần 1</span><h2>Chỉ định và nhóm theo dõi</h2>
+    <p class="lead">Các bệnh có chỉ định cắt khối tá tụy, những gì riêng của từng bệnh cần ghi, và cách xếp người bệnh vào nhóm theo dõi để phần mềm tự lập lịch tái khám.</p></div>
+
+  <div class="grp" data-bulk="1"><h3>Phạm vi phẫu thuật đưa vào sổ</h3><div class="list">
+    <div class="it" data-id="cd_pv_kieu"><h4>Các kiểu cắt khối tá tụy được đưa vào</h4>
+      <p>Whipple cổ điển (cắt hang vị), bảo tồn môn vị (PPPD), bảo tồn dạ dày gần trọn (SSPPD). Ghi đường tiếp cận: mở, nội soi toàn bộ, robot, nội soi hỗ trợ; có chuyển mở hay không. PD mở rộng (cắt kèm mạch máu hoặc cơ quan khác) ghi theo định nghĩa ISGPS (Hartwig 2014).</p></div>
+    <div class="it" data-id="cd_pv_toanbo"><h4>Cắt toàn bộ tụy: đưa vào, đánh dấu riêng</h4>
+      <p>Thường gặp khi diện cắt cổ tụy dương tính trên cắt lạnh hoặc tụy quá mềm. Kết cục chức năng khác hẳn PD nên cần tách khi phân tích.</p></div>
+    <div class="it" data-id="cd_pv_thamdo"><h4>Mở bụng thăm dò không cắt được: đưa vào, đánh dấu "không cắt"</h4>
+      <p>Để tính tỷ lệ cắt được trên số ca đưa lên bàn mổ. Không vào lịch tái khám, chỉ ghi kết cục 30 và 90 ngày (nhóm P0).</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>A. Bệnh ác tính</h3><div class="list">
+    <div class="it" data-id="cd_pdac"><h4>Ung thư biểu mô tuyến ống tụy (PDAC) đầu tụy, mỏm móc</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>Khả năng cắt bỏ (NCCN), CA 19-9 kèm bilirubin cùng ngày, điều trị tân hỗ trợ, đáp ứng mô học (TRG), điều trị bổ trợ.</dd>
+      <dt>Ghi chú</dt><dd>Tiên lượng xấu nhất trong nhóm. Bổ trợ mFOLFIRINOX: trung vị sống còn 54,4 so với 35,0 tháng của gemcitabine (PRODIGE 24, 2018). Người bệnh không chịu được: gemcitabine + capecitabine (ESPAC-4) hoặc S-1 (JASPAC-01).</dd></dl></div>
+    <div class="it" data-id="cd_vater"><h4>Ung thư bóng Vater</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>Típ mô học: ruột / mật–tụy / hỗn hợp.</dd><dt>Ghi chú</dt><dd>Típ mô học quyết định phác đồ bổ trợ và tiên lượng; tiên lượng chung tốt hơn PDAC.</dd></dl></div>
+    <div class="it" data-id="cd_dmx"><h4>Ung thư đường mật đoạn xa</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>Diện cắt ống mật, độ sâu xâm lấn (mm).</dd><dt>Ghi chú</dt><dd>Bổ trợ capecitabine 6 tháng (BILCAP).</dd></dl></div>
+    <div class="it" data-id="cd_tatrang"><h4>Ung thư tá tràng (D1–D2, quanh bóng)</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>Phân giai đoạn theo ruột non (AJCC).</dd></dl></div>
+    <div class="it" data-id="cd_net"><h4>U thần kinh nội tiết tụy (PanNET), NET tá tràng/bóng Vater, ung thư biểu mô thần kinh nội tiết (NEC)</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>Có chức năng hay không (insulinoma, gastrinoma…), Ki-67, nhân chia, độ WHO, MEN1.</dd><dt>Ghi chú</dt><dd>NEC kém biệt hóa theo dõi như ung thư biểu mô tuyến.</dd></dl></div>
+    <div class="it" data-id="cd_gist"><h4>GIST tá tràng</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>Kích thước, nhân chia /5 mm², vỡ u, nhóm nguy cơ.</dd><dt>Ghi chú</dt><dd>Imatinib bổ trợ 3 năm nếu nguy cơ cao.</dd></dl></div>
+    <div class="it" data-id="cd_dican"><h4>Di căn đến tụy (hay gặp nhất: ung thư thận tế bào sáng)</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>U nguyên phát, thời gian từ khi điều trị u nguyên phát.</dd></dl></div>
+    <div class="it" data-id="cd_kecan"><h4>Ung thư cơ quan kế cận xâm lấn (đại tràng góc gan, dạ dày)</h4>
+      <p>Cắt khối en-bloc; hiếm.</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>B. Tân sinh dạng nang và tổn thương tiền ung thư</h3><div class="list">
+    <div class="it" data-id="cd_ipmn"><h4>IPMN (u nhú nhầy trong ống tụy)</h4>
+      <dl class="kv"><dt>Cần ghi riêng</dt><dd>Loại ống chính / ống nhánh / hỗn hợp; dấu hiệu nguy cơ cao trước mổ; mức nghịch sản (thấp / cao / xâm lấn); típ biểu mô; diện cắt; tiền sử gia đình ung thư tụy.</dd>
+      <dt>Ghi chú</dt><dd>Dấu hiệu nguy cơ cao theo Kyoto 2024: vàng da do u dạng nang đầu tụy, nốt đặc tăng quang ≥ 5 mm, ống tụy chính ≥ 10 mm, tế bào học nghi ngờ hoặc dương tính. IPMN xâm lấn theo dõi như PDAC.</dd></dl></div>
+    <div class="it" data-id="cd_mcn"><h4>MCN (u nang nhầy)</h4><p>Ghi có xâm lấn hay không. Hiếm ở đầu tụy; không xâm lấn thì gần như khỏi hẳn sau cắt.</p></div>
+    <div class="it" data-id="cd_spn"><h4>SPN (u đặc giả nhú)</h4><p>Ghi kích thước, xâm nhập mạch/thần kinh, diện cắt. Thường ở nữ trẻ, ác tính thấp, có thể tái phát muộn.</p></div>
+    <div class="it" data-id="cd_scn"><h4>SCN (u nang thanh dịch)</h4><p>Ghi lý do mổ (có triệu chứng / chẩn đoán không chắc). Lành tính; mổ vì nghi ác thì tính vào "chẩn đoán trước mổ không chắc".</p></div>
+    <div class="it" data-id="cd_iopn"><h4>IOPN, ITPN</h4><p>Rất hiếm; ghi vào nhóm IPMN/u ác tính tùy giải phẫu bệnh.</p></div>
+    <div class="it" data-id="cd_utuyen"><h4>U tuyến tá tràng / bóng Vater</h4><p>Ghi mức nghịch sản, lý do không cắt được qua nội soi, có đa polyp tuyến gia đình (FAP) không. FAP cần nội soi theo dõi suốt đời.</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>C. Bệnh lành tính – viêm, D. Chấn thương, E. Khác</h3><div class="list">
+    <div class="it" data-id="cd_vtm"><h4>Viêm tụy mạn có khối viêm đầu tụy</h4><p>Ghi thang đau trước/sau mổ, dùng opioid, hẹp ống mật chủ hoặc tá tràng, không loại trừ được ung thư. Lựa chọn khác: phẫu thuật Frey, Beger.</p></div>
+    <div class="it" data-id="cd_vtr"><h4>Viêm tụy rãnh (paraduodenal pancreatitis)</h4><p>Ghi hẹp tá tràng, uống rượu.</p></div>
+    <div class="it" data-id="cd_vttm"><h4>Viêm tụy tự miễn (IgG4)</h4><p>Ghi IgG4 máu, chẩn đoán trước mổ. Thường là ca "mổ vì nghi ung thư".</p></div>
+    <div class="it" data-id="cd_ct"><h4>Chấn thương: tổn thương phức hợp tá – tụy nặng</h4>
+      <p>AAST tụy độ V (vỡ nát đầu tụy), tá tràng độ V (vỡ nát phức hợp tá tụy hoặc mất mạch nuôi tá tràng). Ghi cơ chế (kín / xuyên), ISS, sốc lúc nhập viện, tổn thương phối hợp, mổ một thì hay hai thì, thời gian từ chấn thương đến mổ. Rất hiếm, tử vong cao; không vào lịch theo dõi ung thư.</p></div>
+    <div class="it" data-id="cd_khac"><h4>Khác (rất hiếm)</h4><p>Thủng tá tràng do thủ thuật (ERCP) không sửa được, chảy máu từ u không cầm được bằng can thiệp: ghi nhóm "khác", mô tả bằng chữ.</p></div>
+    <div class="it" data-id="cd_hai_cd"><h4>Lưu riêng chẩn đoán trước mổ và chẩn đoán giải phẫu bệnh</h4>
+      <p>Hai trường riêng: <code>tm_cd_truocmo</code> và <code>gpb_nhom</code>. Tính được tỷ lệ cắt vì bệnh lành tính ngoài dự kiến (chỉ số chất lượng chẩn đoán trước mổ). <b>Nhóm theo dõi luôn gán theo giải phẫu bệnh.</b></p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>Nhóm theo dõi (dùng để gán lịch tái khám)</h3>
+    <p class="note">Phần mềm gợi ý nhóm ngay khi nhập giải phẫu bệnh; bác sĩ xác nhận hoặc đổi. Đổi nhóm thì các mốc chưa đến hạn được lập lại, các lần đã khám giữ nguyên.</p>
+    <div class="list">
+    <div class="it" data-id="nh_p1"><h4>P1 · Ung thư biểu mô</h4><p>PDAC, IPMN/MCN xâm lấn, ung thư bóng Vater, đường mật đoạn xa, tá tràng, NEC, ung thư khác (di căn đến tụy tạm vào đây). Trọng tâm: tái phát, sống còn, bổ trợ, chất lượng sống, chức năng tụy.</p></div>
+    <div class="it" data-id="nh_p2"><h4>P2a / P2b · U thần kinh nội tiết nguy cơ thấp / cao <span class="flag">Tiêu chí là đề xuất</span></h4><p>Nguy cơ cao khi có ít nhất một: G3 hoặc Ki-67 cao, hạch dương tính, R1, xâm nhập mạch/thần kinh. Còn lại là nguy cơ thấp. Theo dõi tái phát muộn đến 10 năm.</p></div>
+    <div class="it" data-id="nh_p3"><h4>P3a / P3b · IPMN không xâm lấn nguy cơ cao / thấp</h4><p>P3a: nghịch sản độ cao, hoặc diện cắt còn tổn thương, hoặc tiền sử gia đình ung thư tụy. P3b: nghịch sản độ thấp, diện cắt sạch. Trọng tâm: tổn thương mới ở mỏm tụy còn lại.</p></div>
+    <div class="it" data-id="nh_p4"><h4>P4 · SPN</h4><p>Theo dõi tái phát muộn.</p></div>
+    <div class="it" data-id="nh_p5"><h4>P5 · GIST</h4><p>Chia theo nguy cơ (NIH sửa đổi, Joensuu 2008); theo dõi tái phát và thời gian dùng imatinib.</p></div>
+    <div class="it" data-id="nh_p6"><h4>P6 · Lành tính – viêm</h4><p>SCN, MCN không xâm lấn, u tuyến tá tràng/bóng Vater, viêm tụy mạn, viêm tụy rãnh, viêm tụy tự miễn, lành tính khác. Trọng tâm: chức năng tụy, đau, chất lượng sống, biến chứng muộn.</p></div>
+    <div class="it" data-id="nh_p7"><h4>P7 · Chấn thương</h4><p>Chức năng, biến chứng muộn, trở lại làm việc.</p></div>
+    <div class="it" data-id="nh_p0"><h4>P0 · Không cắt được / không theo dõi</h4><p>Mở bụng thăm dò; người bệnh từ chối theo dõi. Chỉ ghi kết cục chu phẫu (30 và 90 ngày).</p></div>
+    <div class="it" data-id="nh_moc"><h4>Mốc thời gian chung</h4><p><b>Ngày mổ là mốc 0</b> của mọi tính toán. Giai đoạn chu phẫu: từ ngày mổ đến hết ngày 90; biến chứng trong giai đoạn này ghi vào bảng biến chứng, sau ngày 90 ghi là biến chứng muộn. Tử vong trong viện, 30 ngày, 90 ngày tính mọi nguyên nhân.</p></div>
+  </div></div>
+</section>
+
+<!-- ============ PHẦN 2 ============ -->
+<section id="s2" class="sec wrap" data-sec="2">
+  <div class="sec-h"><span class="sec-n">Phần 2</span><h2>Thang điểm, phân loại và định nghĩa kết cục</h2>
+    <p class="lead">Dùng định nghĩa quốc tế đã công bố để số liệu so sánh được với y văn và giữa các bệnh viện. Sổ lưu <b>dữ liệu gốc</b> song song với độ do bác sĩ chấm; ở chỗ có thể, phần mềm tự tính độ để đối chiếu. N3 = ngày hậu phẫu thứ 3 (ngày mổ là N0).</p></div>
+
+  <div class="grp" data-bulk="1"><h3>Trước mổ</h3><div class="list">
+    <div class="it" data-id="df_ecog"><h4>ECOG</h4><div class="tb"><table><tr><th>Độ</th><th>Mô tả</th></tr>
+      <tr><td>0</td><td>Hoạt động bình thường, không hạn chế</td></tr><tr><td>1</td><td>Hạn chế hoạt động gắng sức, đi lại và làm việc nhẹ được</td></tr><tr><td>2</td><td>Tự chăm sóc được, không làm việc được; nằm &lt; 50% thời gian thức</td></tr><tr><td>3</td><td>Tự chăm sóc hạn chế; nằm &gt; 50% thời gian thức</td></tr><tr><td>4</td><td>Hoàn toàn phụ thuộc, nằm tại giường</td></tr></table></div></div>
+    <div class="it" data-id="df_asa"><h4>ASA (bản cập nhật 2014)</h4><p>I khỏe mạnh · II bệnh toàn thân nhẹ · III bệnh toàn thân nặng · IV bệnh toàn thân nặng đe dọa tính mạng thường xuyên · V hấp hối · thêm "E" nếu mổ cấp cứu.</p></div>
+    <div class="it" data-id="df_cci"><h4>Chỉ số bệnh kèm Charlson</h4><div class="tb"><table><tr><th>Điểm</th><th>Bệnh kèm</th></tr>
+      <tr><td>1</td><td>Nhồi máu cơ tim · suy tim · bệnh mạch máu ngoại biên · đột quỵ/TIA · sa sút trí tuệ · bệnh phổi mạn · bệnh mô liên kết · loét dạ dày tá tràng · bệnh gan nhẹ · ĐTĐ không biến chứng</td></tr>
+      <tr><td>2</td><td>Liệt nửa người · bệnh thận trung bình–nặng · ĐTĐ có tổn thương cơ quan đích · u đặc khác (trong 5 năm) · bệnh bạch cầu · lymphoma</td></tr>
+      <tr><td>3</td><td>Bệnh gan trung bình–nặng</td></tr><tr><td>6</td><td>U đặc di căn · AIDS</td></tr>
+      <tr><td>Tuổi</td><td>50–59: +1 · 60–69: +2 · 70–79: +3 · ≥ 80: +4 (bản hiệu chỉnh theo tuổi)</td></tr></table></div>
+      <p style="margin-top:6px"><b>Quy ước:</b> không tính bệnh chính đang được mổ vào CCI. Lưu cả CCI thô và CCI theo tuổi.</p></div>
+    <div class="it" data-id="df_cfs"><h4>Thang suy yếu lâm sàng (Clinical Frailty Scale 1–9)</h4><p>Tùy chọn, cho người ≥ 70 tuổi.</p></div>
+    <div class="it" data-id="df_nrs"><h4>NRS-2002</h4><p>Điểm suy dinh dưỡng (0–3) + mức độ bệnh (0–3; mổ lớn ổ bụng = 2) + 1 nếu ≥ 70 tuổi. ≥ 3 điểm = có nguy cơ dinh dưỡng.</p></div>
+    <div class="it" data-id="df_glim"><h4>GLIM 2019 (chẩn đoán suy dinh dưỡng)</h4><p>Cần ≥ 1 tiêu chí kiểu hình và ≥ 1 tiêu chí nguyên nhân. Kiểu hình: sụt cân &gt; 5% trong 6 tháng hoặc &gt; 10% quá 6 tháng · BMI thấp (người châu Á: &lt; 18,5 nếu &lt; 70 tuổi; &lt; 20 nếu ≥ 70 tuổi) · giảm khối cơ. Nguyên nhân: giảm ăn hoặc kém hấp thu · viêm / gánh nặng bệnh.</p></div>
+    <div class="it" data-id="df_dlm"><h4>Vàng da và dẫn lưu mật trước mổ</h4><p>Ghi bilirubin lúc nhập viện và ngay trước mổ, phương pháp dẫn lưu, ngày dẫn lưu, biến chứng, cấy dịch mật. Bối cảnh: thử nghiệm DROP (NEJM 2010) cho thấy dẫn lưu thường quy làm tăng biến chứng; sổ sẽ trả lời câu hỏi này cho chính khoa.</p></div>
+    <div class="it" data-id="df_ca199"><h4>CA 19-9</h4><p>Khoảng 5–10% người không tiết CA 19-9 (Lewis âm). Vàng da, viêm đường mật làm tăng giả, nên <b>luôn ghi kèm bilirubin cùng ngày</b>; giá trị diễn giải tốt nhất sau khi đã giải áp đường mật.</p></div>
+    <div class="it" data-id="df_nccn"><h4>Khả năng cắt bỏ ung thư tụy đầu/mỏm móc (NCCN, tóm tắt)</h4><div class="tb"><table><tr><th>Mức</th><th>Tĩnh mạch (SMV / PV)</th><th>Động mạch (SMA, thân tạng, ĐM gan chung)</th></tr>
+      <tr><td>Cắt được</td><td>Không tiếp xúc, hoặc ≤ 180° không biến dạng bờ</td><td>Không tiếp xúc</td></tr>
+      <tr><td>Giáp biên</td><td>&gt; 180°, hoặc ≤ 180° có biến dạng bờ / huyết khối nhưng tái tạo được; tiếp xúc TM chủ dưới</td><td>Tiếp xúc ĐM gan chung không lan tới thân tạng hay chỗ chia; SMA ≤ 180°; ĐM biến thể</td></tr>
+      <tr><td>Tiến triển tại chỗ</td><td>Không tái tạo được</td><td>SMA hoặc thân tạng &gt; 180°</td></tr></table></div>
+      <p style="margin-top:6px">Sổ lưu độ tiếp xúc từng mạch rồi gợi ý mức; bác sĩ xác nhận.</p></div>
+    <div class="it" data-id="df_iap"><h4>IAP 2017 (A-B-C)</h4><p>A giải phẫu (như trên) · B sinh học (CA 19-9 &gt; 500 U/mL hoặc nghi di căn hạch) · C thể trạng (ECOG ≥ 2).</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>Trong mổ</h3><div class="list">
+    <div class="it" data-id="df_frs"><h4>Điểm nguy cơ rò tụy (Fistula Risk Score, Callery 2013)</h4><div class="tb"><table><tr><th>Yếu tố</th><th>Mức → điểm</th></tr>
+      <tr><td>Mật độ tụy</td><td>chắc 0 · mềm 2</td></tr>
+      <tr><td>Bệnh học</td><td>PDAC hoặc viêm tụy 0 · bóng Vater, tá tràng, u dạng nang, u tế bào đảo 1</td></tr>
+      <tr><td>Ống tụy</td><td>≥ 5 mm 0 · 4 mm 1 · 3 mm 2 · 2 mm 3 · ≤ 1 mm 4</td></tr>
+      <tr><td>Máu mất</td><td>≤ 400 mL 0 · 401–700 1 · 701–1000 2 · &gt; 1000 3</td></tr></table></div>
+      <p style="margin-top:6px">Tổng 0–10: 0 không đáng kể · 1–2 thấp · 3–6 trung bình · 7–10 cao. Phần mềm tự tính.</p></div>
+    <div class="it" data-id="df_uafrs"><h4>ua-FRS (Mungroop 2019) <span class="flag">Chưa cài</span></h4><p>Giới nam, BMI, tụy mềm, đường kính ống tụy; hợp với mổ nội soi/robot. Chưa cài cho đến khi lấy được hệ số gốc; các biến đầu vào đã có nên tính lại được về sau.</p></div>
+    <div class="it" data-id="df_cat_mach"><h4>Cắt tĩnh mạch cửa – mạc treo (ISGPS, Bockhorn 2014)</h4><p>Loại 1 cắt một phần thành, khâu trực tiếp · loại 2 cắt một phần, vá miếng · loại 3 cắt đoạn, nối tận–tận · loại 4 cắt đoạn, ghép đoạn mạch. Cắt động mạch ghi riêng.</p></div>
+    <div class="it" data-id="df_nao_hach"><h4>Nạo hạch chuẩn cho PD (ISGPS, Tol 2014)</h4><p>Nhóm hạch 5, 6, 8a, 12b1, 12b2, 12c, 13a, 13b, 14a, 14b, 17a, 17b. Ghi: chuẩn / mở rộng / ít hơn chuẩn.</p></div>
+    <div class="it" data-id="df_mo_rong"><h4>PD mở rộng (ISGPS, Hartwig 2014)</h4><p>Cắt thêm: dạ dày ngoài hang vị, đại tràng/mạc treo, ruột non ngoài quai đầu, TM cửa/mạc treo, động mạch, TM chủ dưới, thượng thận, thận, gan, cơ hoành.</p></div>
+    <div class="it" data-id="df_noi_tuy"><h4>Miệng nối tụy: ghi theo thành phần</h4><p>Tụy–hỗng tràng / tụy–dạ dày · kỹ thuật (ống tụy–niêm mạc, lồng, Blumgart, khác) · stent (không / trong / ra ngoài). Không dùng mã phân loại tổng hợp, nên chuyển sang hệ phân loại nào cũng được.</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>Biến chứng sau mổ</h3><div class="list">
+    <div class="it" data-id="df_cd"><h4>Clavien–Dindo (2004)</h4><div class="tb"><table><tr><th>Độ</th><th>Định nghĩa</th></tr>
+      <tr><td>I</td><td>Diễn tiến khác thường, không cần thuốc đặc hiệu, phẫu thuật, nội soi hay can thiệp X quang (được dùng chống nôn, hạ sốt, giảm đau, lợi tiểu, điện giải, vật lý trị liệu; mở vết mổ tại giường)</td></tr>
+      <tr><td>II</td><td>Cần thuốc ngoài nhóm độ I (kể cả kháng sinh), truyền máu, nuôi ăn tĩnh mạch toàn phần</td></tr>
+      <tr><td>IIIa / IIIb</td><td>Can thiệp phẫu thuật / nội soi / X quang không gây mê toàn thân / dưới gây mê toàn thân</td></tr>
+      <tr><td>IVa / IVb</td><td>Đe dọa tính mạng, cần hồi sức: suy một cơ quan (kể cả lọc máu) / suy đa cơ quan</td></tr>
+      <tr><td>V</td><td>Tử vong</td></tr><tr><td>"d"</td><td>Còn di chứng lúc xuất viện</td></tr></table></div></div>
+    <div class="it" data-id="df_cci_bc"><h4>Chỉ số biến chứng toàn diện (CCI, Slankamenac 2013)</h4><p>Cộng tất cả biến chứng của một người: √(tổng trọng số) ÷ 2, trọng số I = 300 · II = 1750 · IIIa = 2750 · IIIb = 4550 · IVa = 7200 · IVb = 8550; tử vong = 100. Phần mềm tự tính.</p></div>
+    <div class="it" data-id="df_popf"><h4>Rò tụy sau mổ (POPF, ISGPS 2016)</h4><p>Amylase dịch dẫn lưu (bất kỳ lượng) &gt; 3 lần giới hạn trên amylase máu của phòng xét nghiệm.</p>
+      <div class="tb"><table><tr><th>Độ</th><th>Tiêu chuẩn</th></tr>
+      <tr><td>Rò sinh hóa</td><td>Không ảnh hưởng diễn tiến lâm sàng; không còn tính là rò tụy</td></tr>
+      <tr><td>B</td><td>Thay đổi điều trị: giữ dẫn lưu &gt; 3 tuần; dẫn lưu lại qua da/nội soi; can thiệp mạch vì chảy máu liên quan rò; nhiễm trùng không suy cơ quan</td></tr>
+      <tr><td>C</td><td>Mổ lại, hoặc suy cơ quan, hoặc tử vong liên quan rò</td></tr></table></div>
+      <p class="note" style="margin-top:6px">Dữ liệu gốc: amylase dịch N1, N3 (N5), giới hạn trên amylase máu của phòng xét nghiệm, ngày rút dẫn lưu, dẫn lưu lại, nhiễm trùng, mổ lại.</p></div>
+    <div class="it" data-id="df_dge"><h4>Chậm làm trống dạ dày (DGE, ISGPS 2007)</h4><div class="tb"><table><tr><th>Độ</th><th>Ống thông dạ dày</th><th>Chưa ăn đặc đến</th><th>Nôn/chướng, thuốc tăng nhu động</th></tr>
+      <tr><td>A</td><td>4–7 ngày hoặc đặt lại sau N3</td><td>N7</td><td>±</td></tr>
+      <tr><td>B</td><td>8–14 ngày hoặc đặt lại sau N7</td><td>N14</td><td>+</td></tr>
+      <tr><td>C</td><td>&gt; 14 ngày hoặc đặt lại sau N14</td><td>N21</td><td>+</td></tr></table></div>
+      <p class="note" style="margin-top:6px">Loại trừ tắc cơ học. Phần mềm tính độ từ ngày rút ống thông, đặt lại, ngày ăn đặc.</p></div>
+    <div class="it" data-id="df_pph"><h4>Chảy máu sau cắt tụy (PPH, ISGPS 2007)</h4><p>Thời điểm: sớm ≤ 24 giờ / muộn &gt; 24 giờ. Vị trí: trong / ngoài lòng ống tiêu hóa. Mức độ: nhẹ (Hb giảm &lt; 3 g/dL, lâm sàng ổn) / nặng (Hb giảm ≥ 3 g/dL, suy sụp lâm sàng, truyền &gt; 3 đơn vị, cần nút mạch hoặc mổ lại). <b>A</b> sớm + nhẹ · <b>B</b> sớm + nặng hoặc muộn + nhẹ · <b>C</b> muộn + nặng.</p></div>
+    <div class="it" data-id="df_ro_mat"><h4>Rò mật (ISGLS 2011)</h4><p>Bilirubin dịch dẫn lưu ≥ 3 lần bilirubin máu cùng lúc, từ N3; hoặc phải can thiệp vì tụ dịch mật / viêm phúc mạc mật. A ít thay đổi điều trị · B can thiệp không mổ lại (hoặc A kéo dài &gt; 1 tuần) · C mổ lại.</p></div>
+    <div class="it" data-id="df_duong_chap"><h4>Rò dưỡng chấp (ISGPS 2017)</h4><p>Dịch trắng đục từ N3, triglyceride ≥ 110 mg/dL (≥ 1,2 mmol/L). A chỉ hạn chế chế độ ăn · B nuôi ăn qua sonde kéo dài, tĩnh mạch, octreotide, giữ hoặc đặt dẫn lưu, tái nhập viện · C điều trị xâm lấn hơn, hồi sức, tử vong.</p></div>
+    <div class="it" data-id="df_ppap"><h4>Viêm tụy cấp sau cắt tụy (PPAP, ISGPS 2022) <span class="flag">Chưa đối chiếu bảng gốc</span></h4><p>Tăng amylase máu sau mổ (POH): &gt; giới hạn trên trong 48 giờ đầu, chỉ là thay đổi sinh hóa. PPAP: POH kéo dài ít nhất 48 giờ đầu và có biểu hiện lâm sàng liên quan và hình ảnh viêm tụy cấp. Độ B nhẹ–trung bình; C nặng (suy cơ quan, mổ lại, tử vong). Dữ liệu gốc: amylase máu N1, N2.</p></div>
+    <div class="it" data-id="df_ssi"><h4>Nhiễm trùng vết mổ (CDC)</h4><p>Nông (da, dưới da) / sâu (cân, cơ) / cơ quan – khoang (tụ dịch, áp xe ổ bụng), trong 30 ngày.</p></div>
+    <div class="it" data-id="df_bc_khac"><h4>Các biến chứng khác, chấm Clavien–Dindo</h4><p>Viêm phổi · suy hô hấp · tổn thương thận cấp (KDIGO) · nhiễm khuẩn huyết · biến cố tim mạch · huyết khối TM sâu/thuyên tắc phổi · đột quỵ · sảng · viêm đường mật · loét miệng nối/xuất huyết tiêu hóa · bung thành bụng · tắc ruột · <i>C. difficile</i> · huyết khối TM cửa · thiếu máu gan · khác.</p></div>
+    <div class="it" data-id="df_tu_vong"><h4>Tử vong và kết cục chu phẫu</h4><p>Tử vong trong viện, 30 ngày, 90 ngày (mọi nguyên nhân, tính từ ngày mổ). Thất bại cứu sống: tử vong ở người có biến chứng Clavien–Dindo ≥ III. Tái nhập viện trong 30 và 90 ngày ở bất kỳ bệnh viện nào. Thời gian nằm viện sau mổ.</p></div>
+    <div class="it" data-id="df_to"><h4>Kết cục lý tưởng (Textbook Outcome, van Roessel 2020)</h4><p>Đạt khi không có cả sáu: POPF B/C · rò mật B/C · PPH B/C · Clavien–Dindo ≥ III · tái nhập viện · tử vong trong viện. Nghiên cứu gốc (Hà Lan 2014–2017): 58,3% sau PD. Dùng làm chỉ số chất lượng theo quý, theo phẫu thuật viên.</p></div>
+    <div class="it" data-id="df_too"><h4>Kết cục lý tưởng về ung thư: để tùy chọn khi phân tích</h4><p>Có nhiều định nghĩa (thường thêm R0, ≥ 12 hạch, bắt đầu bổ trợ). Không cài cứng.</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>Giải phẫu bệnh</h3><div class="list">
+    <div class="it" data-id="df_ajcc_tuy"><h4>AJCC 8 – tụy ngoại tiết (PDAC, IPMN/MCN xâm lấn)</h4><p>T1 ≤ 2 cm (T1a ≤ 0,5 · T1b &gt; 0,5–&lt; 1 · T1c 1–2) · T2 &gt; 2–≤ 4 cm · T3 &gt; 4 cm · T4 xâm lấn thân tạng, SMA và/hoặc ĐM gan chung. N1 1–3 hạch · N2 ≥ 4. Giai đoạn IA T1N0 · IB T2N0 · IIA T3N0 · IIB T1–3 N1 · III N2 hoặc T4 · IV M1.</p></div>
+    <div class="it" data-id="df_ajcc_vater"><h4>AJCC 8 – bóng Vater</h4><p>T1a giới hạn ở bóng/cơ Oddi · T1b qua cơ Oddi và/hoặc vào dưới niêm tá tràng · T2 lớp cơ tá tràng · T3a vào tụy ≤ 0,5 cm · T3b vào tụy &gt; 0,5 cm hoặc mô quanh tụy/thanh mạc tá tràng · T4 thân tạng, SMA, ĐM gan chung. N1 1–3, N2 ≥ 4.</p></div>
+    <div class="it" data-id="df_ajcc_dmx"><h4>AJCC 8 – đường mật đoạn xa</h4><p>T1 xâm lấn thành &lt; 5 mm · T2 5–12 mm · T3 &gt; 12 mm · T4 thân tạng, SMA, ĐM gan chung. N1 1–3, N2 ≥ 4.</p></div>
+    <div class="it" data-id="df_ajcc_tt"><h4>AJCC 8 – tá tràng (theo ruột non)</h4><p>T1a lớp đệm · T1b dưới niêm · T2 lớp cơ · T3 qua lớp cơ, chưa thủng thanh mạc · T4 thủng thanh mạc hoặc xâm lấn cơ quan khác (kể cả tụy). N1 1–2, N2 ≥ 3.</p></div>
+    <div class="it" data-id="df_ajcc_net"><h4>AJCC 8 – u thần kinh nội tiết tụy</h4><p>T1 &lt; 2 cm giới hạn ở tụy · T2 2–4 cm · T3 &gt; 4 cm hoặc xâm lấn tá tràng/ống mật chủ · T4 xâm lấn cơ quan kế cận hoặc thành mạch lớn. N1 có hạch vùng.</p></div>
+    <div class="it" data-id="df_dien_cat"><h4>Diện cắt: lưu khoảng cách, tính hai quy ước</h4><p>Khoảng cách (mm) từ u đến từng diện: cổ tụy · SMA/mỏm móc · rãnh SMV · ống mật · dạ dày/tá tràng · hỗng tràng · mặt sau. Phần mềm tính R theo <b>quy tắc 1 mm</b> (R1 khi &lt; 1 mm) và theo <b>CAP</b> (R1 chỉ khi u chạm diện cắt). R2 = còn u đại thể.</p></div>
+    <div class="it" data-id="df_hach"><h4>Hạch</h4><p>Số hạch nạo được, số hạch di căn, tỷ lệ hạch (LNR, tự tính). AJCC 8 khuyến cáo khảo sát ≥ 12 hạch.</p></div>
+    <div class="it" data-id="df_trg"><h4>Đáp ứng sau tân hỗ trợ (CAP – Ryan sửa đổi)</h4><p>0 đáp ứng hoàn toàn · 1 gần hoàn toàn · 2 một phần · 3 kém hoặc không đáp ứng. Ghi kèm ypTNM.</p></div>
+    <div class="it" data-id="df_who_net"><h4>Độ WHO 2019 cho u thần kinh nội tiết</h4><p>G1 Ki-67 &lt; 3%, nhân chia &lt; 2/2 mm² · G2 3–20%, 2–20 · G3 &gt; 20%, &gt; 20 · NEC kém biệt hóa (tế bào nhỏ/lớn) · MiNEN.</p></div>
+    <div class="it" data-id="df_gist"><h4>GIST – nguy cơ tái phát (NIH sửa đổi, Joensuu 2008)</h4><p>Nhân chia trên 50 HPF (≈ 5 mm²). Cao khi có một: vỡ u · &gt; 10 cm · nhân chia &gt; 10 · &gt; 5 cm và &gt; 5 · 2,1–5 cm và &gt; 5 (u ngoài dạ dày) · 5,1–10 cm và ≤ 5 (u ngoài dạ dày). Rất thấp ≤ 2 cm và ≤ 5 · thấp 2,1–5 cm và ≤ 5 · trung bình ≤ 2 cm và 6–10.</p></div>
+    <div class="it" data-id="df_phan_tu"><h4>Sinh học phân tử (tùy chọn)</h4><p>Đột biến gen dòng mầm (BRCA1/2, PALB2…; NCCN khuyến cáo xét nghiệm cho mọi người bệnh PDAC) · MMR/MSI · KRAS · HER2 (ung thư đường mật).</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>Chức năng, chất lượng sống</h3><div class="list">
+    <div class="it" data-id="df_pei"><h4>Suy tụy ngoại tiết</h4><p>Không có xét nghiệm chuẩn dễ làm sau PD; elastase phân kém tin cậy sau PD. Ghi triệu chứng (tiêu phân mỡ, tiêu chảy, chướng bụng, sụt cân), có dùng men tụy thay thế không, <b>liều lipase mỗi bữa chính</b> (khuyến cáo thường dùng 40.000–50.000 đơn vị Ph.Eur., nửa liều cho bữa phụ), elastase phân nếu có.</p></div>
+    <div class="it" data-id="df_dtd"><h4>Đái tháo đường</h4><p>Tình trạng trước mổ: không / tiền ĐTĐ / ĐTĐ mới &lt; 1 năm / ĐTĐ ≥ 1 năm. ĐTĐ mới sau mổ theo ADA: HbA1c ≥ 6,5% hoặc đường huyết đói ≥ 7,0 mmol/L hoặc ngẫu nhiên ≥ 11,1 mmol/L kèm triệu chứng; ghi thời điểm phát hiện, điều trị.</p></div>
+    <div class="it" data-id="df_can_dau"><h4>Cân nặng và đau</h4><p>Cân nặng mỗi lần khám (tự tính % thay đổi so với trước mổ, BMI). Đau theo thang số 0–10; viêm tụy mạn thêm dùng opioid, số ngày nghỉ việc vì đau.</p></div>
+    <div class="it" data-id="df_bc_muon"><h4>Biến chứng muộn (sau ngày 90)</h4><p>Thoát vị vết mổ · hẹp miệng nối mật/viêm đường mật tái diễn · áp xe gan · loét miệng nối · hẹp miệng nối tụy · tắc ruột · gan nhiễm mỡ mới sau mổ · suy dinh dưỡng.</p></div>
+    <div class="it" data-id="df_eq5d"><h4>EQ-5D-5L + thang VAS cho mọi người bệnh</h4><p>5 câu, phỏng vấn qua điện thoại được. Có bản tiếng Việt và bộ giá trị cho Việt Nam (Mai và cs., 2020), quy ra chỉ số tiện ích. Phải đăng ký với EuroQol trước khi dùng.</p></div>
+    <div class="it" data-id="df_c30"><h4>EORTC QLQ-C30 cho nhóm ung thư (P1–P5) <span class="flag">Chưa xác nhận bản Việt chính thức</span></h4><p>30 câu: 5 thang chức năng, 9 triệu chứng, sức khỏe chung. Miễn phí cho nghiên cứu học thuật nhưng phải xin phép EORTC.</p></div>
+    <div class="it" data-id="df_pan26"><h4>EORTC QLQ-PAN26: để sau <span class="flag">Chưa thấy bản tiếng Việt</span></h4><p>Mô-đun ung thư tụy 26 câu. EORTC đang xây bản cập nhật. Nếu dùng phải dịch theo quy trình của EORTC.</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>Sống còn, tái phát, chấn thương</h3><div class="list">
+    <div class="it" data-id="df_os"><h4>Sống còn toàn bộ và không bệnh</h4><p>OS: từ ngày mổ đến tử vong mọi nguyên nhân; người còn sống kiểm duyệt ở ngày liên lạc cuối còn sống. DFS: từ ngày mổ đến tái phát hoặc tử vong, tùy cái nào trước.</p></div>
+    <div class="it" data-id="df_ngay_tp"><h4>Ngày và xác nhận tái phát</h4><p>Ngày tái phát = ngày của <b>hình ảnh đầu tiên</b> thấy tổn thương. Xác nhận bằng sinh thiết / hình ảnh tiến triển lần sau / hội chẩn. CA 19-9 tăng đơn thuần chỉ là "nghi ngờ".</p></div>
+    <div class="it" data-id="df_tp_som"><h4>Tái phát sớm (PDAC): &lt; 12 tháng sau mổ</h4><p>Theo Groot và cs. (Ann Surg 2018).</p></div>
+    <div class="it" data-id="df_vt_tp"><h4>Vị trí tái phát</h4><p>Tại chỗ (giường tụy, quanh mạch, mỏm tụy còn lại, miệng nối) · hạch vùng · gan · phúc mạc · phổi · xương · hạch xa · khác; xếp thành tại chỗ đơn thuần / xa đơn thuần / cả hai. Với IPMN phân biệt "tái phát" với "tổn thương mới ở mỏm tụy".</p></div>
+    <div class="it" data-id="df_tv_md"><h4>Nguyên nhân tử vong và mất dấu</h4><p>Nguyên nhân: do bệnh · biến chứng phẫu thuật · biến chứng hóa trị · nguyên nhân khác · không rõ. Mất dấu: không liên lạc được sau 3 lần gọi ở các thời điểm khác nhau; ghi ngày liên lạc cuối còn sống.</p></div>
+    <div class="it" data-id="df_ct"><h4>Chấn thương</h4><p>AAST tụy và tá tràng (I–V) · ISS (tổng bình phương 3 điểm AIS cao nhất ở 3 vùng, 0–75) · sốc lúc nhập viện (HA tâm thu &lt; 90 mmHg) · mổ một thì hay hai thì (ghi ngày mổ thì 2).</p></div>
+  </div></div>
+  <p class="note" style="margin-top:14px">Tài liệu gốc: Bassi 2017 (POPF); Wente 2007 (DGE, PPH); Koch 2011 (rò mật); Besselink 2017 (rò dưỡng chấp); Marchegiani 2022 (PPAP); Dindo 2004; Slankamenac 2013; Callery 2013; van Roessel 2020; Bockhorn 2014; Tol 2014; Hartwig 2014; Isaji 2018; Ohtsuka 2024 (Kyoto); Conroy 2018 (PRODIGE 24); Mai 2020 (EQ-5D-5L Việt Nam); Groot 2018; Joensuu 2008.</p>
+</section>
+
+<!-- ============ PHẦN 3 ============ -->
+<section id="s3" class="sec wrap" data-sec="3">
+  <div class="sec-h"><span class="sec-n">Phần 3</span><h2>Lịch tái khám soạn sẵn</h2>
+    <p class="lead">Lịch là bản mẫu, sửa được trong bảng tính mà không cần sửa phần mềm. Khi người bệnh được gán nhóm (sau giải phẫu bệnh), phần mềm sinh các mốc tính từ ngày mổ. Tần suất chụp CT cần cân nhắc theo khả năng chi trả của người bệnh.</p></div>
+
+  <div class="grp" data-bulk="1"><h3>Nguyên tắc chung</h3><div class="list">
+    <div class="it" data-id="lk_cua_so"><h4>Cửa sổ thời gian của mỗi mốc</h4><div class="tb"><table><tr><th>Mốc</th><th>Cửa sổ</th></tr>
+      <tr><td>N30</td><td>± 7 ngày</td></tr><tr><td>N90</td><td>± 14 ngày</td></tr><tr><td>Tháng 3–12</td><td>± 21 ngày</td></tr><tr><td>Tháng 15–24</td><td>± 30 ngày</td></tr><tr><td>Từ tháng 30</td><td>± 45 ngày</td></tr><tr><td>Hằng năm sau năm 5</td><td>± 60 ngày</td></tr></table></div></div>
+    <div class="it" data-id="lk_trang_thai"><h4>Trạng thái mốc và danh sách nhắc</h4><p>Chưa đến · đến hạn · quá hạn · đã khám · bỏ lỡ (bác sĩ đóng, kèm lý do) · không áp dụng (tử vong, rút khỏi). Trang chính có ba danh sách: đến hạn tuần này, quá hạn – cần gọi điện, sắp tới 30 ngày.</p></div>
+    <div class="it" data-id="lk_chu_phau"><h4>Giai đoạn chu phẫu, chung cho mọi nhóm</h4><div class="tb"><table><tr><th>Mốc</th><th>Việc cần ghi</th></tr>
+      <tr><td>Trước mổ</td><td>Cân nặng, ECOG, HbA1c/đường huyết, đau, chất lượng sống nền, triệu chứng tiêu hóa</td></tr>
+      <tr><td>Xuất viện</td><td>Hậu phẫu, biến chứng, nơi ra viện</td></tr>
+      <tr><td>N30</td><td>Tình trạng sống, tái nhập viện, biến chứng mới; giải phẫu bệnh và gán nhóm; với ung thư: hội chẩn, kế hoạch bổ trợ (mục tiêu bắt đầu trong 12 tuần)</td></tr>
+      <tr><td>N90</td><td>Tử vong 90 ngày, tái nhập viện 90 ngày, đóng bảng biến chứng chu phẫu</td></tr></table></div>
+      <p class="note" style="margin-top:6px">N30 và N90 có thể là cuộc gọi điện thoại.</p></div>
+  </div></div>
+
+  <div class="grp" data-bulk="1"><h3>Lịch theo nhóm</h3><div class="list">
+    <div class="it" data-id="lk_p1"><h4>P1 · Ung thư biểu mô (PDAC và quanh bóng Vater)</h4>
+      <div class="tb"><table class="num"><tr><th>Mốc</th><th class="c">Khám, cân, ECOG</th><th class="c">CA 19-9 / CEA</th><th class="c">CT ngực–bụng–chậu</th><th class="c">HbA1c</th><th class="c">Chất lượng sống</th></tr>
+      <tr><td>Trước mổ</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td></tr>
+      <tr><td>N30</td><td class="c">●</td><td class="c">●</td><td class="c"></td><td class="c"></td><td class="c">●</td></tr>
+      <tr><td>Th3</td><td class="c">●</td><td class="c">●</td><td class="c">● nền</td><td class="c">●</td><td class="c">●</td></tr>
+      <tr><td>Th6</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td></tr>
+      <tr><td>Th9, Th15, Th21</td><td class="c">●</td><td class="c">●</td><td class="c"></td><td class="c"></td><td class="c"></td></tr>
+      <tr><td>Th12, Th24</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td></tr>
+      <tr><td>Th18</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c"></td><td class="c"></td></tr>
+      <tr><td>Th30, Th42, Th54</td><td class="c">●</td><td class="c">●</td><td class="c">○</td><td class="c"></td><td class="c"></td></tr>
+      <tr><td>Th36, Th48, Th60</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td></tr>
+      <tr><td>Năm 6–10</td><td colspan="5">Hằng năm: tình trạng sống (gọi điện được)</td></tr></table></div>
+      <p class="note" style="margin-top:6px">● mặc định · ○ tùy chọn (CT mỗi 6 tháng ở năm 3–5). Dựa trên NCCN (khám + CA 19-9 + CT mỗi 3–6 tháng trong 2 năm, rồi 6–12 tháng đến năm 5), đối chiếu qua tài liệu thứ cấp.</p></div>
+    <div class="it" data-id="lk_p1_tp"><h4>P1 · Lịch sau khi đã tái phát</h4><p>Ngừng lịch phát hiện tái phát; mỗi 3 tháng chỉ hỏi tình trạng sống và điều trị đang nhận, chất lượng sống mỗi 6 tháng, đến khi tử vong.</p></div>
+    <div class="it" data-id="lk_p2"><h4>P2 · U thần kinh nội tiết <span class="flag">Đề xuất, chưa đối chiếu ENETS 2023</span></h4>
+      <div class="tb"><table><tr><th>Mốc</th><th>P2a nguy cơ thấp</th><th>P2b nguy cơ cao</th></tr>
+      <tr><td>Th3</td><td></td><td>Khám + hình ảnh</td></tr>
+      <tr><td>Th6, Th12</td><td>Khám + hình ảnh (Th12 thêm HbA1c, chất lượng sống)</td><td>Như cột trái</td></tr>
+      <tr><td>Th18, Th30</td><td></td><td>Khám + hình ảnh</td></tr>
+      <tr><td>Th24, Th36</td><td>Khám + hình ảnh</td><td>Khám + hình ảnh</td></tr>
+      <tr><td>Th48, Th60</td><td>Khám + hình ảnh</td><td>Khám + hình ảnh</td></tr>
+      <tr><td>Năm 6–10</td><td>Mỗi 2 năm</td><td>Hằng năm</td></tr></table></div>
+      <p class="note" style="margin-top:6px">CT hoặc MRI đa pha; PET Ga-68 DOTATATE khi nghi tái phát nếu tiếp cận được; chromogranin A không làm thường quy. NEC kém biệt hóa dùng lịch P1.</p></div>
+    <div class="it" data-id="lk_p3"><h4>P3 · IPMN không xâm lấn <span class="flag">Đề xuất, chưa đối chiếu bảng Kyoto 2024</span></h4>
+      <p>Ưu tiên MRI/MRCP. <b>P3a</b>: khám + MRI ở Th6, Th12, Th18, Th24, rồi hằng năm khi người bệnh còn đủ sức mổ lại. <b>P3b</b>: Th12, Th24, rồi mỗi 2 năm khi còn đủ sức mổ lại. MCN không xâm lấn không cần theo dõi u, chuyển sang P6.</p></div>
+    <div class="it" data-id="lk_p4"><h4>P4 · SPN <span class="flag">Đề xuất</span></h4><p>Th6 khám + hình ảnh; hằng năm đến Th60; rồi mỗi 2 năm đến Th120 (tái phát có thể muộn).</p></div>
+    <div class="it" data-id="lk_p5"><h4>P5 · GIST (theo ESMO)</h4><p>Rất thấp: không chụp định kỳ. Thấp, trung bình: CT mỗi 6–12 tháng trong 5 năm. Cao (imatinib 3 năm): CT mỗi 3–6 tháng khi dùng thuốc; sau ngừng mỗi 3 tháng trong 2 năm, mỗi 6 tháng đến tròn 5 năm sau ngừng, rồi hằng năm thêm 5 năm.</p></div>
+    <div class="it" data-id="lk_p6"><h4>P6 · Lành tính, viêm tụy</h4><p>Th6, Th12: khám, cân, triệu chứng tiêu hóa, men tụy, HbA1c, đau, chất lượng sống. Th24, Th36, Th48, Th60: như trên, gọi điện được (trừ HbA1c). U tuyến tá tràng/FAP: nội soi theo chuyên khoa tiêu hóa.</p></div>
+    <div class="it" data-id="lk_p7"><h4>P7 · Chấn thương</h4><p>Th6, Th12, Th24: chức năng tụy, cân nặng, biến chứng muộn, chất lượng sống, đã đi làm/đi học lại chưa.</p></div>
+    <div class="it" data-id="lk_vang"><h4>Khi người bệnh không đến tái khám</h4><ol><li>Đến hạn chưa có phiếu: mốc vào danh sách "cần gọi".</li><li>Gọi điện: tình trạng sống, nhập viện, xét nghiệm/hình ảnh nơi khác (xin ảnh kết quả, chỉ chép số liệu, không tải ảnh có họ tên vào phần mềm), EQ-5D-5L qua điện thoại.</li><li>Ghi phiếu tái khám hình thức "điện thoại".</li><li>Ba lần gọi không được: mốc "không liên lạc được"; hai mốc liên tiếp như vậy thì gợi ý "mất dấu".</li></ol></div>
+  </div></div>
+</section>
+
+<!-- ============ PHẦN 4 ============ -->
+<section id="s4" class="sec wrap" data-sec="4">
+  <div class="sec-h"><span class="sec-n">Phần 4</span><h2>Từ điển dữ liệu</h2>
+    <p class="lead">Danh sách biến theo 13 biểu mẫu. Sau khi duyệt, bảng này được chép vào bảng tính; phần mềm dựng biểu mẫu từ đó. <span class="lv lv-C">C</span> cốt lõi, bắt buộc ở mọi bệnh viện · <span class="lv lv-M">M</span> mở rộng, tùy cơ sở. Bấm vào tên biểu mẫu để mở.</p></div>
+  <div class="grp" data-bulk="1"><h3>Quy ước chung</h3><div class="list">
+    <div class="it" data-id="tv_thieu"><h4>Ghi rõ lý do thiếu dữ liệu</h4><p>Với biến cốt lõi, người nhập chọn: có giá trị · <b>KL</b> không làm · <b>KR</b> không rõ · <b>KAD</b> không áp dụng. Phân biệt được "không làm xét nghiệm" với "quên nhập".</p></div>
+    <div class="it" data-id="tv_don_vi"><h4>Đơn vị</h4><p>Bilirubin, creatinine theo µmol/L (có ô đổi từ mg/dL); albumin g/L; Hb g/dL.</p></div>
+    <div class="it" data-id="tv_ma"><h4>Mã biến cố định</h4><p>Chữ thường không dấu, tiền tố theo biểu mẫu (<code>tm_</code> trước mổ, <code>pt_</code> phẫu thuật…). Mã đã có dữ liệu thì không đổi.</p></div>
+    <div class="it" data-id="tv_khoi_luong"><h4>Khối lượng nhập dự kiến</h4><p>Bộ cốt lõi khoảng 110 biến cho một ca từ trước mổ đến xuất viện, cộng khoảng 15 biến mỗi lần tái khám; bộ mở rộng thêm khoảng 70 biến. Ước tính 15–20 phút cho phần chu phẫu nếu có sẵn hồ sơ, 3–5 phút mỗi lần tái khám.</p></div>
+  </div></div>
+  <h3>Các biểu mẫu</h3>
+  <div id="dict"></div>
+</section>
+
+<!-- ============ PHẦN 5 ============ -->
+<section id="s5" class="sec wrap" data-sec="5">
+  <div class="sec-h"><span class="sec-n">Phần 5</span><h2>Tổ chức phần mềm và bảo vệ dữ liệu</h2>
+    <p class="lead">Nền tảng Google Sheets + Apps Script + Google Drive, chi phí 0 đồng, không cần máy chủ riêng, chạy trên máy khoa (Windows 7, Chrome 109), điện thoại và iPad.</p></div>
+  <div class="grp" data-bulk="1"><h3>Kiến trúc</h3><div class="list">
+    <div class="it" data-id="ar_nen_tang"><h4>Một web app Apps Script, dữ liệu trong Google Sheet</h4><p>Bảng tính "Dữ liệu" (không có họ tên) gồm các bảng theo biểu mẫu, bảng lịch dự kiến, từ điển, danh mục, lịch mẫu, danh sách cơ sở, tài khoản và nhật ký. Giới hạn 10 triệu ô mỗi file, đủ cho vài nghìn người bệnh theo dõi nhiều năm.</p></div>
+    <div class="it" data-id="ar_tach_dd"><h4>Tách thông tin định danh ra file riêng</h4><p>Họ tên, ngày sinh, mã người bệnh của bệnh viện, điện thoại nằm ở file "Định danh"; mọi bảng khác chỉ có mã nghiên cứu (vd AB-2026-001). File xuất cho thống kê không bao giờ có cột định danh.</p></div>
+    <div class="it" data-id="ar_dang_nhap"><h4>Phần mềm tự quản lý đăng nhập</h4><p>Web app chạy dưới tài khoản chủ sở hữu thì Apps Script không đọc được Gmail của người dùng; còn chia sẻ thẳng file thì ai cũng xem được toàn bộ. Vì vậy dùng mã đăng nhập + mật khẩu (băm có muối), bắt đổi ở lần đầu, phiên giữ 8 giờ; không chia sẻ file Sheet cho ai.</p></div>
+    <div class="it" data-id="ar_vai_tro"><h4>Bốn vai trò</h4><p>Quản trị (mọi quyền, xem dữ liệu gộp không định danh) · trưởng nhóm cơ sở (duyệt, khóa hồ sơ, xuất dữ liệu cơ sở mình) · nhập liệu (thêm, sửa hồ sơ cơ sở mình; xem điện thoại để gọi tái khám) · xem/thống kê (số liệu tổng hợp, dữ liệu không định danh).</p></div>
+    <div class="it" data-id="ar_tu_dien"><h4>Biểu mẫu dựng từ từ điển dữ liệu</h4><p>Thêm, sửa biến bằng một dòng trong bảng từ điển; ô hiện/ẩn theo điều kiện; kiểm hợp lệ khi nhập; biến tính tự động hiện ngay (FRS, CCI, độ DGE…).</p></div>
+    <div class="it" data-id="ar_nhat_ky"><h4>Nhật ký thay đổi và sao lưu</h4><p>Ghi ai sửa biến nào lúc nào, giá trị cũ → mới. Mỗi đêm tự chép file dữ liệu sang thư mục sao lưu, giữ 30 bản. Hai người lưu cùng lúc không ghi đè nhau.</p></div>
+    <div class="it" data-id="ar_nhac"><h4>Nhắc lịch tái khám</h4><p>Danh sách cần gọi trên trang chính; sáng thứ Hai gửi email cho trưởng nhóm cơ sở danh sách mốc trong tuần, chỉ có mã nghiên cứu, không có họ tên.</p></div>
+    <div class="it" data-id="ar_bao_cao"><h4>Báo cáo chất lượng và xuất dữ liệu</h4><p>Theo quý/năm, theo phẫu thuật viên: số ca, tử vong 30/90 ngày, POPF B/C, Clavien–Dindo ≥ III, CCI trung bình, kết cục lý tưởng, thời gian nằm viện, R0, ≥ 12 hạch, tỷ lệ bắt đầu bổ trợ. Xuất CSV kèm sổ mã biến cho SPSS, Stata, R.</p></div>
+  </div></div>
+  <div class="grp" data-bulk="1"><h3>Pháp lý và mở rộng</h3><div class="list">
+    <div class="it" data-id="ar_phap_ly"><h4>Đạo đức nghiên cứu và dữ liệu cá nhân</h4><p>Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 và Nghị định 356/2025/NĐ-CP (hiệu lực 01/01/2026): thông tin sức khỏe là dữ liệu nhạy cảm; dữ liệu trên Google nằm ở máy chủ nước ngoài. Cần đề cương được Hội đồng đạo đức thông qua, phiếu đồng ý nói rõ dữ liệu lưu trên dịch vụ đám mây, và hỏi bộ phận pháp chế về chuyển dữ liệu ra nước ngoài.</p></div>
+    <div class="it" data-id="ar_da_tt"><h4>Định danh của bệnh viện khác khi mở rộng</h4><p>Không nên nằm trong tài khoản của BV An Bình. Hai cách: mỗi bệnh viện tự giữ bảng khóa mã nghiên cứu ↔ họ tên trên máy của họ, hoặc mã hóa ô định danh ngay trên trình duyệt bằng mật khẩu riêng của từng bệnh viện.</p></div>
+    <div class="it" data-id="ar_redcap"><h4>Cân nhắc REDCap cho giai đoạn đa trung tâm</h4><p>REDCap là công cụ chuẩn cho sổ đăng ký nghiên cứu (nhật ký thay đổi, lịch theo dõi, phiếu cho người bệnh tự điền), miễn phí cho tổ chức phi lợi nhuận nhưng cần máy chủ của trường hoặc bệnh viện. Từ điển dữ liệu chuyển sang được gần như nguyên vẹn.</p></div>
+    <div class="it" data-id="ar_giai_doan"><h4>Các giai đoạn</h4><p>0 hồ sơ chuyên môn (đang làm) → 1 phần mềm cho BV An Bình: đăng nhập, biểu mẫu, lịch tái khám, nhật ký, xuất CSV; thử bằng dữ liệu giả rồi vài ca hồi cứu → 2 chất lượng sống (sau khi có giấy phép), báo cáo chất lượng, đường cong sống còn → 3 đa trung tâm.</p></div>
+  </div></div>
+</section>
+
+<!-- ============ GỬI ============ -->
+<section id="gui" class="sec wrap">
+  <div class="sec-h"><h2>Gửi kết quả</h2></div>
+  <div class="list">
+    <div class="panel">
+      <p id="sum_line" class="num">Đang tính…</p>
+      <div id="sum_secs" class="note num"></div>
+      <div id="sum_warn" class="note" style="margin-top:6px"></div>
+    </div>
+    <div class="panel">
+      <label for="y_thieu">Mục hoặc biến còn thiếu cần bổ sung<textarea class="fld" id="y_thieu"></textarea></label>
+      <label for="y_chung" style="margin-top:12px">Ý kiến chung<textarea class="fld" id="y_chung"></textarea></label>
+      <p class="note" style="margin-top:12px">Chấm xong, bấm một nút dưới đây để lấy <b>file kết quả (JSON)</b>, rồi gửi file đó cho BS. Lê Kim Long qua Zalo hoặc email. Gửi lại nhiều lần được; người chủ trì lấy bản mới nhất.</p>
+      <div class="row">
+        <button type="button" class="btn pri" data-act="share" id="btn_share" hidden>Gửi file qua Zalo, Mail…</button>
+        <button type="button" class="btn pri" data-act="dl" id="btn_dl">Tải file JSON</button>
+        <button type="button" class="btn" data-act="copy">Sao chép nội dung</button>
+        <button type="button" class="btn" data-act="reset">Xóa bản nháp</button>
+        <span id="reset_cf" hidden class="note">Xóa toàn bộ điểm và ghi chú trên máy này? <button type="button" class="btn" data-act="reset-yes">Xóa</button> <button type="button" class="btn" data-act="reset-no">Thôi</button></span>
+      </div>
+      <div id="send_msg" class="msg" role="status"></div>
+      <div id="json_wrap" hidden style="margin-top:12px">
+        <p class="note">Nội dung file kết quả. Nếu không tải hay chia sẻ được file, có thể sao chép toàn bộ đoạn này dán vào tin nhắn Zalo hoặc email.</p>
+        <textarea id="json_out" class="codebox" readonly></textarea>
+      </div>
+      <details class="note" style="margin-top:12px"><summary>File tải về nằm ở đâu?</summary>
+        <p style="margin-top:6px">iPhone, iPad: ứng dụng <b>Tệp</b> → <b>Tải về</b>. Android: ứng dụng <b>Files</b> → <b>Tải xuống</b>. Máy tính: thư mục <b>Downloads</b>. Trong Zalo, chọn đính kèm tệp rồi tìm ở thư mục đó.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TỔNG HỢP (người chủ trì) ============ -->
+<section id="tong-hop" class="sec wrap" hidden>
+  <div class="sec-h"><h2>Tổng hợp kết quả</h2>
+    <p class="lead">Dành cho người chủ trì. Chọn các file JSON nhận được (chọn nhiều file một lần được); danh sách được giữ trên máy này. I-CVI = tỷ lệ người chấm 3 hoặc 4 trên số người đã chấm mục đó. Ngưỡng: I-CVI = 1,00 khi có ≤ 5 người kiểm định, ≥ 0,78 khi có ≥ 6 (Lynn 1986); S-CVI/Ave ≥ 0,90 (Polit và Beck 2006).</p></div>
+  <div class="panel">
+    <label for="agg_files">Chọn file kết quả (.json)<input type="file" id="agg_files" multiple></label>
+    <details style="margin-top:10px"><summary class="note">Hoặc dán nội dung kết quả (JSON, hoặc mã KDW1 từ trang Claude)</summary>
+      <textarea id="imp_in" class="codebox" style="margin-top:6px"></textarea>
+      <div class="row"><button type="button" class="btn" data-act="imp-add">Thêm</button></div></details>
+    <div class="row">
+      <label for="agg_self" class="inl"><input type="checkbox" id="agg_self"> Tính cả phần chấm đang lưu trên máy này</label>
+      <button type="button" class="btn" data-act="clear-all">Xóa danh sách</button>
+      <span id="clear_cf" hidden class="note">Xóa mọi kết quả đã đọc trên máy này? <button type="button" class="btn" data-act="clear-yes">Xóa</button> <button type="button" class="btn" data-act="clear-no">Thôi</button></span>
+    </div>
+    <p id="agg_msg" class="msg" role="status"></p>
+  </div>
+  <div class="kpis" id="agg_kpis"></div>
+  <h3>Người kiểm định</h3>
+  <div class="tb" id="agg_people"></div>
+  <h3>Theo mục</h3>
+  <div class="row">
+    <label for="agg_filter" class="inl">Hiện
+      <select id="agg_filter"><option value="can">Cần xem lại</option><option value="all">Tất cả</option><option value="cmt">Có ghi chú</option><option value="lv">Có đề xuất đổi cấp</option></select></label>
+    <label for="agg_sec" class="inl">Phần
+      <select id="agg_sec"><option value="">Tất cả</option><option value="1">1 Chỉ định</option><option value="2">2 Định nghĩa</option><option value="3">3 Lịch tái khám</option><option value="4">4 Từ điển</option><option value="5">5 Phần mềm</option></select></label>
+    <button type="button" class="btn" data-act="csv">Tải bảng tổng hợp (CSV)</button>
+    <span id="csv_msg" class="note"></span>
+  </div>
+  <div class="tb" id="agg_items" style="margin-top:8px"></div>
+  <h3>Ý kiến chung và mục còn thiếu</h3>
+  <div id="agg_general" class="list"></div>
+</section>
+</main>
+
+<footer class="wrap">Sổ theo dõi người bệnh cắt khối tá tụy · Khoa Ngoại, Bệnh viện An Bình · Hồ sơ chuyên môn bản nháp 1, ngày 20/10/2026 · <a href="#tong-hop">Tổng hợp kết quả (dành cho người chủ trì)</a></footer>
+
+<script>
+(function(){
+'use strict';
+/* ---------- Từ điển dữ liệu: [mã, mã hiển thị, nội dung, kiểu/giá trị, cấp, ghi chú]; ['#', tiêu đề nhóm con] ---------- */
+var FORMS=[
+{f:'nb',name:'Người bệnh',desc:'Khóa chính, không có họ tên. Một dòng mỗi người bệnh.',v:[
+['nb_ma','nb_ma','Mã nghiên cứu','tính: <CƠSỞ>-<NĂM>-<STT>, vd AB-2026-001','C','Dùng thay họ tên ở mọi nơi'],
+['nb_coso','nb_coso','Cơ sở','chọn 1 (danh mục cơ sở)','C','Theo tài khoản người nhập'],
+['nb_kieu','nb_kieu','Tiến cứu / hồi cứu','chọn 1','C','Hồi cứu: nhiều biến có thể "không rõ"'],
+['nb_dong_y','nb_dong_y','Đã ký đồng ý tham gia','có/không + ngày + phiên bản phiếu','C','Hồi cứu: theo quyết định của hội đồng đạo đức'],
+['nb_gioi','nb_gioi','Giới','Nam / Nữ','C',''],
+['nb_tuoi_mo','nb_tuoi_mo','Tuổi lúc mổ','tính từ ngày sinh (file định danh) và ngày mổ','C','Ngày sinh không nằm trong bảng chính'],
+['nb_tinh','nb_tinh','Tỉnh/thành nơi ở','chọn 1','M','Khoảng cách, khả năng tái khám'],
+['nb_bhyt','nb_bhyt','Có bảo hiểm y tế','có/không','M','Ảnh hưởng hoàn tất bổ trợ, tái khám'],
+['nb_nhom_td','nb_nhom_td','Nhóm theo dõi','chọn 1: P0–P7','C','Gợi ý từ giải phẫu bệnh, bác sĩ xác nhận'],
+['nb_trang_thai','nb_trang_thai','Trạng thái','tính: đang theo dõi / tử vong / mất dấu / rút khỏi / kết thúc','C','']]},
+{f:'dd',name:'Định danh (lưu riêng)',desc:'Chỉ cơ sở của người bệnh xem được. Không thu số CCCD, địa chỉ chi tiết.',v:[
+['dd_ho_ten','dd_ho_ten','Họ tên','chữ','C',''],
+['dd_ngay_sinh','dd_ngay_sinh','Ngày sinh (hoặc năm sinh)','ngày','C',''],
+['dd_ma_his','dd_ma_his','Mã người bệnh của bệnh viện','chữ','C',''],
+['dd_so_ba','dd_so_ba','Số lưu trữ hồ sơ / số giải phẫu bệnh','chữ','M',''],
+['dd_sdt1','dd_sdt1','Điện thoại người bệnh','chữ','C',''],
+['dd_sdt2','dd_sdt2','Điện thoại người nhà + quan hệ','chữ','C',''],
+['dd_ghi_chu','dd_ghi_chu','Ghi chú liên lạc (giờ nên gọi, Zalo…)','chữ','M','']]},
+{f:'tm',name:'Trước mổ',desc:'Một dòng mỗi người bệnh.',foot:'* Bắt buộc khi chẩn đoán trước mổ là u ác hoặc nghi ác. † Khi chẩn đoán trước mổ là ung thư tụy hoặc nghi ung thư tụy.',v:[
+['#','Thể trạng, bệnh kèm'],
+['tm_ngay_nv','tm_ngay_nv','Ngày nhập viện đợt mổ','ngày','C',''],
+['tm_cao','tm_cao','Chiều cao','số, cm, 120–210','C',''],
+['tm_can','tm_can','Cân nặng lúc nhập viện','số, kg, 25–200','C',''],
+['tm_bmi','tm_bmi','BMI','tính','C',''],
+['tm_can_6th','tm_can_6th','Cân nặng 6 tháng trước','số, kg','M','→ % sụt cân (tính)'],
+['tm_asa','tm_asa','ASA','I–V, + E','C',''],
+['tm_ecog','tm_ecog','ECOG','0–4','C',''],
+['tm_benh_kem','tm_benh_kem','Bệnh kèm (danh sách Charlson + tăng huyết áp)','chọn nhiều','C','→ CCI và CCI theo tuổi (tính)'],
+['tm_dtd','tm_dtd','Tình trạng đường huyết','không / tiền ĐTĐ / ĐTĐ mới < 1 năm / ĐTĐ ≥ 1 năm','C','Nền để tính ĐTĐ mới sau mổ'],
+['tm_dtd_dt','tm_dtd_dt','Điều trị ĐTĐ','ăn kiêng / thuốc uống / insulin','C','Hiện khi có ĐTĐ'],
+['tm_thuoc_la','tm_thuoc_la','Hút thuốc','không / đã bỏ / đang hút; gói-năm','M',''],
+['tm_ruou','tm_ruou','Uống rượu','không / có / nghiện','M',''],
+['tm_mo_bung','tm_mo_bung','Đã mổ bụng trước đây','có/không','M',''],
+['tm_ts_gd','tm_ts_gd','Tiền sử gia đình / hội chứng di truyền','chọn nhiều: ung thư tụy người thân bậc 1, BRCA, Lynch, FAP, Peutz–Jeghers, viêm tụy di truyền, MEN1, khác','M',''],
+['tm_cfs','tm_cfs','Thang suy yếu lâm sàng','1–9','M','Hiện khi ≥ 70 tuổi'],
+['#','Triệu chứng'],
+['tm_tc','tm_tc','Triệu chứng','chọn nhiều: vàng da, đau bụng, sụt cân, ngứa, sốt/viêm đường mật, xuất huyết tiêu hóa, nôn do hẹp tá tràng, ĐTĐ mới, tiêu phân mỡ, phát hiện tình cờ, khác','C',''],
+['tm_tc_ngay','tm_tc_ngay','Tháng/năm khởi phát','ngày (tháng)','M',''],
+['#','Xét nghiệm gần nhất trước mổ'],
+['tm_hb','tm_hb','Hemoglobin','g/dL','C',''],
+['tm_bc_tc','tm_bc, tm_tc_mau','Bạch cầu, tiểu cầu','G/L','M',''],
+['tm_alb','tm_alb','Albumin','g/L','C',''],
+['tm_bili_nv','tm_bili_nv','Bilirubin toàn phần lúc nhập viện (trước dẫn lưu)','µmol/L','C',''],
+['tm_bili','tm_bili','Bilirubin toàn phần ngay trước mổ','µmol/L','C',''],
+['tm_men_gan','tm_ast, tm_alt, tm_alp, tm_ggt','AST, ALT, ALP, GGT','U/L','M',''],
+['tm_inr','tm_inr','INR','số','M',''],
+['tm_creat','tm_creat','Creatinine','µmol/L','C',''],
+['tm_hba1c','tm_hba1c','HbA1c','%','M',''],
+['tm_ca199','tm_ca199','CA 19-9 (+ ngày, + bilirubin cùng ngày)','U/mL','C*',''],
+['tm_cea','tm_cea','CEA','ng/mL','M',''],
+['tm_igg4','tm_igg4','IgG4','g/L','M',''],
+['#','Hình ảnh, chẩn đoán trước mổ'],
+['tm_hinh_anh','tm_hinh_anh','Đã làm','chọn nhiều: CT, MRI/MRCP, siêu âm nội soi (EUS), PET-CT','C',''],
+['tm_eus_kq','tm_eus_kq','Kết quả chọc hút/sinh thiết qua EUS','ác tính / nghi ngờ / không ác tính / không đủ mẫu / không làm','M',''],
+['tm_u_vt','tm_u_vt','Vị trí tổn thương','đầu tụy / mỏm móc / bóng Vater / ống mật đoạn xa / tá tràng / khác','C',''],
+['tm_u_kt','tm_u_kt','Kích thước lớn nhất (CT/MRI)','số, mm','C',''],
+['tm_ong_tuy','tm_ong_tuy','Đường kính ống tụy chính','số, mm','M',''],
+['tm_omc','tm_omc','Đường kính ống mật chủ','số, mm','M',''],
+['tm_tx_smv','tm_tx_smv','Tiếp xúc SMV/PV','không / ≤ 180° / ≤ 180° có biến dạng-huyết khối / > 180° / tắc không tái tạo được','C†',''],
+['tm_tx_sma','tm_tx_sma','Tiếp xúc SMA','không / ≤ 180° / > 180°','C†',''],
+['tm_tx_ca','tm_tx_ca','Tiếp xúc thân tạng','không / có','C†',''],
+['tm_tx_cha','tm_tx_cha','Tiếp xúc ĐM gan chung','không / có','C†',''],
+['tm_dm_bien_the','tm_dm_bien_the','Biến thể ĐM gan','không / ĐM gan phải thay thế / khác','M',''],
+['tm_nccn','tm_nccn','Khả năng cắt bỏ','gợi ý (tính) → bác sĩ xác nhận: cắt được / giáp biên / tiến triển tại chỗ','C†',''],
+['tm_iap_b','tm_iap_b','CA 19-9 > 500 hoặc nghi di căn hạch','tính + xác nhận','M',''],
+['tm_cd_truocmo','tm_cd_truocmo','Chẩn đoán trước mổ','chọn 1 (cùng danh mục với gpb_nhom) + "u đầu tụy chưa rõ bản chất"','C',''],
+['tm_hoi_chan','tm_hoi_chan','Có hội chẩn đa chuyên khoa','có/không, ngày','M',''],
+['#','Dẫn lưu mật trước mổ'],
+['tm_dlm','tm_dlm','Có dẫn lưu mật','có/không','C',''],
+['tm_dlm_pp','tm_dlm_pp','Phương pháp','ERCP stent nhựa / ERCP stent kim loại / PTBD / EUS / khác','C',''],
+['tm_dlm_ngay','tm_dlm_ngay','Ngày dẫn lưu','ngày','C',''],
+['tm_dlm_bc','tm_dlm_bc','Biến chứng dẫn lưu','chọn nhiều: viêm đường mật, viêm tụy sau ERCP, tắc stent, chảy máu, thủng, khác','C',''],
+['tm_dlm_cay','tm_dlm_cay','Cấy dịch mật','âm tính / dương tính (vi khuẩn) / không làm','M',''],
+['#','Điều trị tân hỗ trợ'],
+['tm_tht','tm_tht','Có hóa trị/xạ trị trước mổ','có/không','C',''],
+['tm_tht_pd','tm_tht_pd','Phác đồ','mFOLFIRINOX / gemcitabine + nab-paclitaxel / gemcitabine / khác','C',''],
+['tm_tht_ck','tm_tht_ck','Số chu kỳ','số','C',''],
+['tm_tht_xa','tm_tht_xa','Xạ trị','không / hóa xạ / SBRT','M',''],
+['tm_tht_kt','tm_tht_kt','Ngày kết thúc','ngày','C',''],
+['tm_tht_dap_ung','tm_tht_dap_ung','Đáp ứng trên hình ảnh (RECIST)','CR / PR / SD / PD','M',''],
+['tm_tht_ca199','tm_tht_ca199','CA 19-9 sau tân hỗ trợ','U/mL','M',''],
+['#','Dinh dưỡng'],
+['tm_nrs','tm_nrs','NRS-2002','0–7','C',''],
+['tm_glim','tm_glim','GLIM','không suy dinh dưỡng / trung bình / nặng','M',''],
+['tm_dd_ct','tm_dd_ct','Can thiệp dinh dưỡng trước mổ','không / uống bổ sung / qua sonde / tĩnh mạch','M','']]},
+{f:'pt',name:'Phẫu thuật',desc:'Một dòng mỗi người bệnh.',v:[
+['pt_ngay','pt_ngay','Ngày mổ (mốc 0)','ngày','C',''],
+['pt_loai','pt_loai','Chương trình / cấp cứu','chọn 1','C',''],
+['pt_ptv','pt_ptv','Phẫu thuật viên chính','chọn 1 (danh mục, mã hóa)','C','→ số ca tích lũy của phẫu thuật viên (tính)'],
+['pt_cat_duoc','pt_cat_duoc','Có cắt được không','cắt được / chỉ thăm dò (± nối tắt)','C','Không cắt → nhóm P0'],
+['pt_tiep_can','pt_tiep_can','Đường tiếp cận','mở / nội soi toàn bộ / robot / nội soi hỗ trợ','C',''],
+['pt_chuyen_mo','pt_chuyen_mo','Chuyển mở','có/không + lý do','C','Hiện khi không phải mổ mở'],
+['pt_kieu','pt_kieu','Kiểu cắt','Whipple cổ điển / PPPD / SSPPD / cắt toàn bộ tụy','C',''],
+['pt_mo_rong','pt_mo_rong','Cắt mở rộng (Hartwig)','chọn nhiều hoặc không','C',''],
+['pt_cat_tm','pt_cat_tm','Cắt TM cửa–mạc treo','không / loại 1 / 2 / 3 / 4','C',''],
+['pt_ghep_tm','pt_ghep_tm','Vật liệu ghép','TM tự thân (ghi TM nào) / nhân tạo / khác','M','Hiện khi loại 2 hoặc 4'],
+['pt_cat_dm','pt_cat_dm','Cắt động mạch','không / có (ĐM nào, cách tái tạo)','C',''],
+['pt_nao_hach','pt_nao_hach','Nạo hạch','chuẩn (ISGPS) / mở rộng / ít hơn chuẩn','C',''],
+['pt_tuy_md','pt_tuy_md','Mật độ tụy','mềm / chắc','C','→ FRS'],
+['pt_ong_tuy','pt_ong_tuy','Đường kính ống tụy ở diện cắt','số, mm','C','→ FRS'],
+['pt_omc','pt_omc','Đường kính ống mật chủ','số, mm','M',''],
+['pt_noi_tuy','pt_noi_tuy','Miệng nối tụy','tụy–hỗng tràng / tụy–dạ dày / không nối','C',''],
+['pt_noi_tuy_kt','pt_noi_tuy_kt','Kỹ thuật nối tụy','ống tụy–niêm mạc / lồng / Blumgart / khác','C',''],
+['pt_noi_tuy_stent','pt_noi_tuy_stent','Stent ống tụy','không / trong / ra ngoài','C',''],
+['pt_noi_mat','pt_noi_mat','Miệng nối mật–hỗng tràng','một lớp / hai lớp; mũi rời / liên tục; stent','M',''],
+['pt_noi_dd','pt_noi_dd','Miệng nối dạ dày (tá tràng)–hỗng tràng','trước đại tràng / sau đại tràng','C',''],
+['pt_braun','pt_braun','Nối Braun / quai Roux riêng','chọn nhiều','M',''],
+['pt_dl','pt_dl','Số ống dẫn lưu','0–4','C',''],
+['pt_nuoi_an','pt_nuoi_an','Mở hỗng tràng nuôi ăn / sonde mũi–hỗng tràng','chọn nhiều / không','M',''],
+['pt_octreotide','pt_octreotide','Octreotide dự phòng','có/không','C',''],
+['pt_tg','pt_tg','Thời gian mổ','số, phút','C',''],
+['pt_mau_mat','pt_mau_mat','Máu mất','số, mL','C','→ FRS'],
+['pt_truyen','pt_truyen','Truyền hồng cầu trong mổ','số, đơn vị','C',''],
+['pt_cat_lanh','pt_cat_lanh','Cắt lạnh diện cắt cổ tụy','không làm / âm tính / dương tính → cắt thêm / dương tính → cắt toàn bộ tụy','M',''],
+['pt_su_co','pt_su_co','Sự cố trong mổ','chữ','M',''],
+['pt_eras','pt_eras','Áp dụng ERAS','có/không','M',''],
+['pt_frs','pt_frs','Điểm nguy cơ rò tụy','tính','C','Cập nhật lại khi có giải phẫu bệnh']]},
+{f:'hp',name:'Hậu phẫu và xuất viện',desc:'Một dòng mỗi người bệnh.',v:[
+['hp_icu','hp_icu','Số ngày hồi sức','số','C',''],
+['hp_tho_may','hp_tho_may','Thở máy sau mổ','số, giờ','M',''],
+['hp_amy_ulm','hp_amy_ulm','Giới hạn trên amylase máu của phòng xét nghiệm','số, U/L','C','Nhập một lần cho mỗi cơ sở, tự điền'],
+['hp_amy_dl1','hp_amy_dl1','Amylase dịch dẫn lưu N1','số, U/L','C','POPF'],
+['hp_amy_dl3','hp_amy_dl3','Amylase dịch dẫn lưu N3','số, U/L','C','POPF'],
+['hp_amy_dl5','hp_amy_dl5','Amylase dịch dẫn lưu N5','số, U/L','M',''],
+['hp_amy_m','hp_amy_m1, hp_amy_m2','Amylase máu N1, N2','số, U/L','M','PPAP'],
+['hp_rut_dl','hp_rut_dl','Ngày rút dẫn lưu cuối','ngày','C','→ ngày hậu phẫu (tính)'],
+['hp_rut_ngt','hp_rut_ngt','Ngày rút ống thông dạ dày','ngày','C','DGE'],
+['hp_ngt_lai','hp_ngt_lai','Đặt lại ống thông dạ dày','không / có (ngày)','C','DGE'],
+['hp_an_dac','hp_an_dac','Ngày ăn được thức ăn đặc','ngày','C','DGE'],
+['hp_truyen_sau','hp_truyen_sau','Truyền hồng cầu sau mổ','số, đơn vị','M',''],
+['hp_tpn','hp_tpn','Nuôi ăn tĩnh mạch toàn phần','có/không','M',''],
+['hp_mo_lai','hp_mo_lai','Mổ lại trong 90 ngày','có/không','C','Chi tiết ở bảng biến chứng'],
+['hp_can_thiep','hp_can_thiep','Can thiệp X quang / nội soi trong 90 ngày','có/không','C',''],
+['hp_ngay_xv','hp_ngay_xv','Ngày xuất viện','ngày','C','→ thời gian nằm viện sau mổ (tính)'],
+['hp_noi_ra','hp_noi_ra','Nơi ra viện','về nhà / chuyển viện / cơ sở chăm sóc / xin về nặng / tử vong','C',''],
+['hp_tnv30','hp_tnv30','Tái nhập viện trong 30 ngày','không / có (nơi, lý do)','C','Ghi ở mốc N30'],
+['hp_tnv90','hp_tnv90','Tái nhập viện trong 90 ngày','không / có (nơi, lý do)','C','Ghi ở mốc N90']]},
+{f:'bc',name:'Biến chứng chu phẫu',desc:'Mỗi biến chứng một dòng, từ ngày mổ đến N90. Tính từ bảng này: Clavien–Dindo cao nhất, CCI, POPF/DGE/PPH/rò mật độ B–C, kết cục lý tưởng, thất bại cứu sống.',v:[
+['bc_loai','bc_loai','Loại biến chứng','chọn 1: POPF · DGE · PPH · rò mật · rò dưỡng chấp · PPAP · nhiễm trùng vết mổ nông/sâu · tụ dịch/áp xe ổ bụng · viêm phổi · suy hô hấp · tổn thương thận cấp · nhiễm khuẩn huyết · biến cố tim mạch · huyết khối TM sâu/thuyên tắc phổi · đột quỵ · sảng · viêm đường mật · loét miệng nối/xuất huyết tiêu hóa · bung thành bụng · tắc ruột · C. difficile · huyết khối TM cửa · thiếu máu gan · khác','C',''],
+['bc_ngay','bc_ngay','Ngày khởi phát','ngày','C',''],
+['bc_isgps','bc_isgps','Độ theo định nghĩa riêng','BL / A / B / C (hiện theo loại; gợi ý từ dữ liệu gốc)','C',''],
+['bc_pph','bc_pph_tg, bc_pph_vt, bc_pph_md','PPH: sớm/muộn · trong/ngoài lòng · nhẹ/nặng','chọn 1 mỗi ô','C','Khi là PPH'],
+['bc_cd','bc_cd','Clavien–Dindo','I / II / IIIa / IIIb / IVa / IVb / V, ± d','C',''],
+['bc_xu_tri','bc_xu_tri','Xử trí','chọn nhiều: thuốc · kháng sinh · truyền máu · nuôi ăn tĩnh mạch · dẫn lưu qua da · nội soi · nút mạch · mổ lại · hồi sức · lọc máu','C',''],
+['bc_ghi_chu','bc_ghi_chu','Ghi chú','chữ','M','']]},
+{f:'gpb',name:'Giải phẫu bệnh',desc:'Một dòng mỗi người bệnh.',v:[
+['gpb_ngay','gpb_ngay','Ngày trả kết quả','ngày','M',''],
+['gpb_nhom','gpb_nhom','Chẩn đoán cuối cùng','chọn 1: PDAC · IPMN xâm lấn · MCN xâm lấn · UTBM bóng Vater · UTBM đường mật đoạn xa · UTBM tá tràng · PanNET · NET tá tràng/bóng Vater · NEC/MiNEN · GIST · di căn đến tụy · ác tính khác · IPMN nghịch sản cao · IPMN nghịch sản thấp · MCN không xâm lấn · SPN · SCN · u tuyến tá tràng/bóng Vater · viêm tụy mạn · viêm tụy rãnh · viêm tụy tự miễn · chấn thương · lành tính khác','C',''],
+['gpb_icd10','gpb_icd10','Mã ICD-10','chữ','M',''],
+['gpb_kt','gpb_kt','Kích thước u','số, mm','C',''],
+['gpb_bh','gpb_bh','Độ biệt hóa','G1 / G2 / G3 / không xác định','C','UTBM'],
+['gpb_typ_vater','gpb_typ_vater','Típ mô học bóng Vater','ruột / mật–tụy / hỗn hợp / không xác định','C','UTBM bóng Vater'],
+['gpb_dc','gpb_dc_*','Khoảng cách u đến từng diện cắt (cổ tụy, SMA/mỏm móc, rãnh SMV, ống mật, đầu gần, đầu xa, mặt sau)','số, mm (0 = chạm diện cắt)','M','Ác tính'],
+['gpb_r','gpb_r','Diện cắt','R0 / R1 / R2 (bác sĩ xác nhận)','C','Ác tính'],
+['gpb_r_tinh','gpb_r1mm, gpb_rcap','R theo quy tắc 1 mm / theo CAP','tính','C','Khi có khoảng cách diện cắt'],
+['gpb_hach_nao','gpb_hach_nao','Số hạch nạo được','số','C',''],
+['gpb_hach_dc','gpb_hach_dc','Số hạch di căn','số','C',''],
+['gpb_lnr','gpb_lnr','Tỷ lệ hạch','tính','C',''],
+['gpb_lvi','gpb_lvi','Xâm nhập mạch máu–bạch huyết','có / không / không ghi','C','Ác tính'],
+['gpb_pni','gpb_pni','Xâm nhập thần kinh','có / không / không ghi','C','Ác tính'],
+['gpb_tnm','gpb_pt, gpb_pn, gpb_m','pT, pN, M','chọn 1 theo vị trí u','C','Ác tính'],
+['gpb_gd','gpb_gd','Giai đoạn','tính, bác sĩ xác nhận','C',''],
+['gpb_ajcc','gpb_ajcc','Phiên bản AJCC','8 / khác','C',''],
+['gpb_trg','gpb_trg','Độ đáp ứng sau tân hỗ trợ (CAP)','0 / 1 / 2 / 3','C','Có tân hỗ trợ'],
+['gpb_ki67','gpb_ki67','Ki-67','%','C','NET'],
+['gpb_nc','gpb_nc','Nhân chia /2 mm²','số','M','NET'],
+['gpb_who','gpb_who','Độ WHO','G1 / G2 / G3 / NEC / MiNEN','C','NET'],
+['gpb_ipmn_loai','gpb_ipmn_loai','Loại IPMN','ống chính / ống nhánh / hỗn hợp','C','IPMN'],
+['gpb_ipmn_bm','gpb_ipmn_bm','Típ biểu mô IPMN','dạ dày / ruột / mật–tụy','M','IPMN'],
+['gpb_ipmn_dc','gpb_ipmn_dc','Diện cắt IPMN','sạch / còn nghịch sản thấp / còn nghịch sản cao','C','IPMN'],
+['gpb_gist_nc','gpb_gist_nc','Nhân chia /5 mm²','số','C','GIST'],
+['gpb_gist_vo','gpb_gist_vo','Vỡ u','có/không','C','GIST'],
+['gpb_gist_nguy_co','gpb_gist_nguy_co','Nhóm nguy cơ GIST','tính','C','GIST'],
+['gpb_gen','gpb_gen','Đột biến gen dòng mầm','không làm / âm tính / BRCA1 / BRCA2 / PALB2 / khác','M','PDAC'],
+['gpb_mmr','gpb_mmr','MMR/MSI','không làm / pMMR / dMMR','M','Ác tính'],
+['gpb_nhom_td','gpb_nhom_td_goi_y','Nhóm theo dõi gợi ý','tính → nb_nhom_td','C','']]},
+{f:'bt',name:'Điều trị bổ trợ',desc:'Mỗi đợt một dòng.',v:[
+['bt_chi_dinh','bt_chi_dinh','Có chỉ định bổ trợ','có / không','C',''],
+['bt_thuc_hien','bt_thuc_hien','Có thực hiện','có / không','C',''],
+['bt_ly_do_khong','bt_ly_do_khong','Lý do không thực hiện','thể trạng · biến chứng chưa hồi phục · từ chối · tài chính · tái phát/tử vong sớm · không rõ','C',''],
+['bt_noi','bt_noi','Nơi điều trị','tại bệnh viện / cơ sở khác (danh mục)','M',''],
+['bt_pd','bt_pd','Phác đồ','mFOLFIRINOX · gemcitabine + capecitabine · gemcitabine · S-1 · capecitabine · gemcitabine + cisplatin · imatinib · khác','C',''],
+['bt_ngay_bd','bt_ngay_bd','Ngày bắt đầu','ngày','C',''],
+['bt_tuan_tu_mo','bt_tuan_tu_mo','Số tuần từ mổ đến bổ trợ','tính','C',''],
+['bt_ck','bt_ck_dk, bt_ck_th','Số chu kỳ dự kiến / đã nhận','số','M',''],
+['bt_giam_lieu','bt_giam_lieu','Có giảm liều','có/không','M',''],
+['bt_ket_qua','bt_ket_qua','Kết quả','hoàn tất / dừng sớm / đang điều trị','C',''],
+['bt_ly_do_dung','bt_ly_do_dung','Lý do dừng sớm','độc tính · tái phát · thể trạng · từ chối · tài chính · khác','M',''],
+['bt_doc_tinh','bt_doc_tinh','Độc tính độ ≥ 3 (CTCAE)','có/không','M',''],
+['bt_xa','bt_xa','Xạ trị bổ trợ','có/không','M',''],
+['bt_ngay_kt','bt_ngay_kt','Ngày kết thúc','ngày','M','']]},
+{f:'tk',name:'Tái khám',desc:'Mỗi lần một dòng.',foot:'* Bắt buộc khi mốc đó có trong lịch của nhóm.',v:[
+['tk_moc','tk_moc','Mốc','tự gán mốc gần nhất (N30, Th3…) hoặc "ngoài lịch"','C',''],
+['tk_ngay','tk_ngay','Ngày','ngày','C',''],
+['tk_hinh_thuc','tk_hinh_thuc','Hình thức','trực tiếp / điện thoại / hồ sơ nơi khác','C',''],
+['tk_tinh_trang','tk_tinh_trang','Tình trạng','sống, chưa tái phát / sống, đã tái phát / tử vong / không liên lạc được','C',''],
+['tk_ecog','tk_ecog','ECOG','0–4','C',''],
+['tk_can','tk_can','Cân nặng','số, kg','C','→ % thay đổi so với trước mổ (tính)'],
+['tk_dau','tk_dau','Đau (NRS)','0–10','M',''],
+['tk_tieu_hoa','tk_tieu_hoa','Tiêu phân mỡ / tiêu chảy','không / thỉnh thoảng / thường xuyên','C',''],
+['tk_men_tuy','tk_men_tuy','Dùng men tụy thay thế','không / có – liều lipase mỗi bữa chính','C',''],
+['tk_dtd','tk_dtd','Đái tháo đường','không / mới sau mổ / có từ trước – ổn / có từ trước – xấu đi','C',''],
+['tk_dtd_dt','tk_dtd_dt','Điều trị ĐTĐ','ăn kiêng / thuốc uống / insulin','C',''],
+['tk_hba1c','tk_hba1c, tk_glucose','HbA1c, đường huyết đói','%, mmol/L','M',''],
+['tk_ca199','tk_ca199, tk_cea','CA 19-9, CEA','U/mL, ng/mL','C*',''],
+['tk_sinh_hoa','tk_alb, tk_bili, tk_alp','Albumin, bilirubin, ALP','theo đơn vị chung','M',''],
+['tk_ha','tk_ha_loai, tk_ha_ngay','Hình ảnh đã làm, ngày chụp','không / CT / MRI / siêu âm / PET; ngày','C*',''],
+['tk_ha_kq','tk_ha_kq','Kết luận hình ảnh','không tái phát / nghi ngờ / tái phát (→ mở phiếu tái phát) / phát hiện khác','C*',''],
+['tk_bc_muon','tk_bc_muon','Biến chứng muộn','chọn nhiều (thoát vị, hẹp miệng nối mật, áp xe gan, loét miệng nối, tắc ruột, gan nhiễm mỡ…)','M',''],
+['tk_nhap_vien','tk_nhap_vien','Nhập viện từ lần trước','số lần + lý do','M',''],
+['tk_ghi_chu','tk_ghi_chu','Ghi chú','chữ','M','']]},
+{f:'cl',name:'Chất lượng sống',desc:'Mỗi mốc một dòng. Chỉ đưa nội dung câu hỏi vào phần mềm sau khi có giấy phép.',v:[
+['cl_moc','cl_moc, cl_ngay','Mốc, ngày','như phiếu tái khám','C',''],
+['cl_cach','cl_cach','Cách thu','tự điền / phỏng vấn trực tiếp / điện thoại','C',''],
+['cl_eq','cl_eq1 … cl_eq5, cl_eq_vas','5 câu EQ-5D-5L và thang VAS','1–5; 0–100','C',''],
+['cl_eq_index','cl_eq_index','Chỉ số tiện ích (bộ giá trị Việt Nam)','tính','C',''],
+['cl_c30','cl_c30_01 … cl_c30_30','30 câu QLQ-C30','1–4 (câu 29, 30: 1–7)','M','Nhóm ung thư'],
+['cl_c30_diem','cl_c30_*','Điểm các thang QLQ-C30','tính theo hướng dẫn chấm của EORTC','M','']]},
+{f:'tp',name:'Tái phát',desc:'Thường một dòng; lặp được cho lần tái phát sau.',v:[
+['tp_ngay','tp_ngay','Ngày hình ảnh đầu tiên thấy tổn thương','ngày','C',''],
+['tp_phat_hien','tp_phat_hien','Phát hiện qua','theo dõi định kỳ / triệu chứng / CA 19-9 tăng','C',''],
+['tp_xac_nhan','tp_xac_nhan','Xác nhận bằng','sinh thiết / hình ảnh tiến triển / hội chẩn','C',''],
+['tp_vi_tri','tp_vi_tri','Vị trí','chọn nhiều: giường tụy/quanh mạch · mỏm tụy còn lại · miệng nối · hạch vùng · gan · phúc mạc · phổi · xương · hạch xa · khác','C',''],
+['tp_kieu','tp_kieu','Kiểu tái phát','tính: tại chỗ đơn thuần / xa đơn thuần / cả hai','C',''],
+['tp_loai_ipmn','tp_loai_ipmn','Với IPMN','tái phát / tổn thương mới ở mỏm tụy','C','IPMN'],
+['tp_dieu_tri','tp_dieu_tri','Điều trị','chọn nhiều: hóa trị · xạ trị · mổ lại · đốt sóng · chăm sóc giảm nhẹ · không điều trị','M','']]},
+{f:'kt',name:'Kết thúc theo dõi / tử vong',desc:'Một dòng mỗi người bệnh.',v:[
+['kt_ly_do','kt_ly_do','Lý do kết thúc','tử vong / mất dấu / rút đồng ý / hết thời gian theo dõi','C',''],
+['kt_ngay_tv','kt_ngay_tv','Ngày tử vong','ngày','C',''],
+['kt_nguyen_nhan','kt_nguyen_nhan','Nguyên nhân tử vong','do bệnh · biến chứng phẫu thuật · biến chứng hóa trị · nguyên nhân khác · không rõ','C',''],
+['kt_noi','kt_noi','Nơi tử vong','bệnh viện / nhà / khác','M',''],
+['kt_nguon','kt_nguon','Nguồn thông tin','hồ sơ / người nhà / giấy báo tử','M',''],
+['kt_lien_lac_cuoi','kt_lien_lac_cuoi','Ngày liên lạc cuối còn sống','ngày','C','Khi mất dấu']]},
+{f:'ct',name:'Chấn thương',desc:'Chỉ hiện khi chỉ định là chấn thương.',v:[
+['ct_co_che','ct_co_che','Cơ chế','kín / vết thương xuyên (vật sắc, hỏa khí)','C',''],
+['ct_aast','ct_aast_tuy, ct_aast_ta','Độ AAST tụy, tá tràng','I–V','C',''],
+['ct_iss','ct_iss','ISS','1–75','C',''],
+['ct_soc','ct_soc','HA tâm thu < 90 mmHg lúc nhập viện','có/không','C',''],
+['ct_kem','ct_kem','Tổn thương phối hợp','chọn nhiều: gan, lách, mạch máu lớn, ruột, thận, ngực, sọ não, chi','C',''],
+['ct_chien_luoc','ct_chien_luoc','Chiến lược','một thì / hai thì (kiểm soát tổn thương)','C',''],
+['ct_ngay_thi2','ct_ngay_thi2','Ngày mổ thì 2','ngày','C','Khi mổ hai thì'],
+['ct_gio_den_mo','ct_gio_den_mo','Giờ từ chấn thương đến mổ','số','M','']]}
+];
+var SEC_NAME={'1':'Chỉ định','2':'Định nghĩa','3':'Lịch tái khám','4':'Từ điển dữ liệu','5':'Phần mềm'};
+var LBL={1:'Không phù hợp',2:'Phù hợp một phần, cần sửa nhiều',3:'Phù hợp, cần sửa ít',4:'Rất phù hợp'};
+var LVN={C:'Cốt lõi',M:'Mở rộng',B:'Bỏ'};
+var KEY='kdw1.draft.v1',AGG_KEY='kdw1.tonghop.v1';
+var S={info:{},r:{},y:'',th:'',t:0,gui:0};
+var ITEMS=[],IT={},RV={},AG=[],lsOK=true;
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function $(id){return document.getElementById(id);}
+function hhmm(t){var d=new Date(t||Date.now());return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+' '+d.getDate()+'/'+(d.getMonth()+1);}
+function fmt2(x){return (Math.round(x*100)/100).toFixed(2).replace('.',',');}
+function isArr(a){return Object.prototype.toString.call(a)==='[object Array]';}
+function slug(s){var x=String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase().slice(0,40);return x||'khong-ten';}
+function ymd(t){var d=new Date(t);return d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2);}
+
+/* ---------- lưu nháp ---------- */
+function lsGet(){try{var s=window.localStorage.getItem(KEY);if(s){var o=JSON.parse(s);if(o&&typeof o==='object'&&o.r)adopt(o);}}catch(e){}}
+function lsSet(){try{window.localStorage.setItem(KEY,JSON.stringify(S));lsOK=true;}catch(e){lsOK=false;}}
+function adopt(o){S.info=o.info&&typeof o.info==='object'?JSON.parse(JSON.stringify(o.info)):{};S.r=o.r&&typeof o.r==='object'?JSON.parse(JSON.stringify(o.r)):{};S.y=o.y||'';S.th=o.th||'';S.t=o.t||0;S.gui=o.gui||0;}
+function setStatus(){
+  $('st_line').textContent=lsOK?(S.t?'Bản nháp tự lưu trên máy này, lần cuối lúc '+hhmm(S.t)+'.':'Bản nháp tự lưu trên máy này.')
+    :'Trình duyệt này không cho lưu nháp (có thể đang ở chế độ riêng tư). Xin chấm xong trong một lần và tải file kết quả trước khi đóng trang.';
+}
+
+/* ---------- dựng từ điển ---------- */
+function renderDict(){
+  var h='';
+  FORMS.forEach(function(F,fi){
+    h+='<details class="form grp" data-bulk="1" id="f_'+F.f+'"'+(fi===0?' open':'')+'><summary><span class="fcode">'+F.f+'</span><span class="fname">'+esc(F.name)+'</span><span class="fprog" data-fprog="'+F.f+'"></span></summary>';
+    h+='<p class="fdesc">'+esc(F.desc)+'</p><div class="vlist">';
+    F.v.forEach(function(x){
+      if(x[0]==='#'){h+='<h4 class="vsub">'+esc(x[1])+'</h4>';return;}
+      var c=x[4].charAt(0)==='C'?'C':'M';
+      h+='<div class="it v" data-id="'+x[0]+'" data-kind="var" data-lv="'+c+'" data-title="'+esc(x[1]+' · '+x[2])+'"><div class="vbody"><div class="vh"><code>'+esc(x[1])+'</code><span class="lv lv-'+c+'" title="'+(c==='C'?'Cốt lõi':'Mở rộng')+'">'+esc(x[4])+'</span></div><div class="vn">'+esc(x[2])+'</div><div class="vt">'+esc(x[3])+'</div>'+(x[5]?'<div class="vnote">'+esc(x[5])+'</div>':'')+'</div></div>';
+    });
+    h+='</div>'+(F.foot?'<p class="ffoot">'+esc(F.foot)+'</p>':'')+'</details>';
+  });
+  $('dict').innerHTML=h;
+}
+
+/* ---------- gắn nút chấm ---------- */
+function controls(id,isVar){
+  var h='<div class="rv" data-for="'+id+'"><div class="sc" role="group" aria-label="Mức phù hợp">';
+  for(var s=1;s<=4;s++)h+='<button type="button" class="sb s'+s+'" data-s="'+s+'" aria-pressed="false" title="'+s+' – '+LBL[s]+'">'+s+'</button>';
+  h+='</div>';
+  if(isVar)h+='<div class="lvs" role="group" aria-label="Đề xuất cấp"><button type="button" class="lb" data-l="C" aria-pressed="false">Cốt lõi</button><button type="button" class="lb" data-l="M" aria-pressed="false">Mở rộng</button><button type="button" class="lb" data-l="B" aria-pressed="false">Bỏ</button></div>';
+  h+='<button type="button" class="cb" aria-expanded="false">Ghi chú</button><textarea class="gt" id="g_'+id+'" rows="2" placeholder="Đề nghị sửa, bổ sung, lý do…" hidden></textarea></div>';
+  return h;
+}
+function enhance(){
+  var els=document.querySelectorAll('.it[data-id]');
+  for(var i=0;i<els.length;i++){
+    var el=els[i],id=el.getAttribute('data-id');
+    var sec=el.closest('[data-sec]');
+    var title=el.getAttribute('data-title');
+    if(!title){var h4=el.querySelector('h4');title=h4?h4.textContent.replace(/\s+/g,' ').trim():id;}
+    var isVar=el.getAttribute('data-kind')==='var';
+    var form=el.closest('details.form');
+    var meta={id:id,title:title,sec:sec?sec.getAttribute('data-sec'):'',isVar:isVar,lv:el.getAttribute('data-lv')||'',form:form?form.id.slice(2):'',el:el};
+    ITEMS.push(meta);IT[id]=meta;
+    var tmp=document.createElement('div');tmp.innerHTML=controls(id,isVar);
+    var rv=tmp.firstChild;el.appendChild(rv);RV[id]=rv;
+  }
+  var gs=document.querySelectorAll('.grp[data-bulk]');
+  for(var j=0;j<gs.length;j++){
+    var b=document.createElement('div');b.className='bulk';
+    b.innerHTML='<button type="button" class="btn" data-act="bulk">Chấm 4 cho các mục chưa chấm trong nhóm này</button><span class="bulk-cf" hidden></span>';
+    var host=gs[j].querySelector('.vlist')||gs[j].querySelector('.list');
+    if(host&&host.parentNode)host.parentNode.insertBefore(b,host.nextSibling);
+  }
+}
+
+/* ---------- hiển thị trạng thái ---------- */
+function paint(id){
+  var rv=RV[id];if(!rv)return;var o=S.r[id]||{};
+  var bs=rv.querySelectorAll('.sb');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-pressed',String(+bs[i].getAttribute('data-s')===o.s));
+  var ls=rv.querySelectorAll('.lb');for(var k=0;k<ls.length;k++)ls[k].setAttribute('aria-pressed',String(ls[k].getAttribute('data-l')===o.l));
+  var ta=rv.querySelector('.gt'),cb=rv.querySelector('.cb');
+  if(o.g){if(document.activeElement!==ta)ta.value=o.g;ta.hidden=false;cb.setAttribute('aria-expanded','true');}
+  else if(document.activeElement!==ta){ta.value='';}
+  cb.classList.toggle('has',!!o.g);
+  IT[id].el.classList.toggle('done',!!o.s);
+}
+function paintAll(){
+  for(var i=0;i<ITEMS.length;i++)paint(ITEMS[i].id);
+  var ins=document.querySelectorAll('[data-info]');
+  for(var k=0;k<ins.length;k++){var key=ins[k].getAttribute('data-info');if(document.activeElement!==ins[k])ins[k].value=S.info[key]||'';}
+  if(document.activeElement!==$('y_chung'))$('y_chung').value=S.y||'';
+  if(document.activeElement!==$('y_thieu'))$('y_thieu').value=S.th||'';
+  progress();setStatus();
+}
+function countDone(){var d=0;ITEMS.forEach(function(m){if(S.r[m.id]&&S.r[m.id].s)d++;});return d;}
+function progress(){
+  var n=ITEMS.length,d=0,bySec={},byForm={};
+  ITEMS.forEach(function(m){
+    var ok=S.r[m.id]&&S.r[m.id].s;
+    if(ok)d++;
+    var s=bySec[m.sec]||(bySec[m.sec]={n:0,d:0});s.n++;if(ok)s.d++;
+    if(m.form){var f=byForm[m.form]||(byForm[m.form]={n:0,d:0});f.n++;if(ok)f.d++;}
+  });
+  $('ptext').textContent=d+'/'+n;
+  $('pfill').style.width=(n?Math.round(d*100/n):0)+'%';
+  var fp=document.querySelectorAll('[data-fprog]');
+  for(var i=0;i<fp.length;i++){var f=byForm[fp[i].getAttribute('data-fprog')];if(f)fp[i].textContent='đã chấm '+f.d+'/'+f.n;}
+  $('sum_line').textContent='Đã chấm '+d+'/'+n+' mục.';
+  var parts=[];Object.keys(SEC_NAME).forEach(function(k){var s=bySec[k];if(s)parts.push('Phần '+k+' '+SEC_NAME[k]+': '+s.d+'/'+s.n);});
+  $('sum_secs').textContent=parts.join(' · ');
+  var miss=ITEMS.filter(function(m){var o=S.r[m.id];return o&&o.s&&o.s<=2&&!o.g;});
+  var w=$('sum_warn');
+  if(miss.length){w.innerHTML='Mục chấm 1–2 chưa có ghi chú lý do: '+miss.slice(0,12).map(function(m){return '<a href="#" data-goto="'+m.id+'">'+esc(m.title.length>48?m.title.slice(0,46)+'…':m.title)+'</a>';}).join(', ')+(miss.length>12?' và '+(miss.length-12)+' mục khác':'')+'.';}
+  else w.textContent='';
+}
+
+/* ---------- ghi nhận thay đổi ---------- */
+var stTimer=null;
+function touch(){S.t=Date.now();lsSet();clearTimeout(stTimer);stTimer=setTimeout(setStatus,300);}
+function changed(id){
+  var o=S.r[id];if(o&&!o.s&&!o.l&&!o.g)delete S.r[id];
+  touch();paint(id);progress();
+}
+
+/* ---------- file kết quả JSON ---------- */
+function buildJson(){
+  var diem={};
+  Object.keys(S.r).forEach(function(id){var o=S.r[id];if(!o||(!o.s&&!o.l&&!o.g))return;var e={s:o.s||0};if(o.l)e.l=o.l;if(o.g)e.g=o.g;if(IT[id])e.t=IT[id].title;diem[id]=e;});
+  return {loai:'kiem-dinh-whipple',vong:1,ban_noi_dung:'2026-10-20',nguoi_kiem_dinh:S.info,gui_luc:new Date(S.gui||Date.now()).toISOString(),so_muc_da_cham:countDone(),tong_so_muc:ITEMS.length,diem:diem,con_thieu:S.th||'',y_kien_chung:S.y||''};
+}
+function jsonText(){return JSON.stringify(buildJson(),null,1);}
+function baseName(){return 'kiem-dinh-whipple_'+slug(S.info.ten)+'_'+ymd(S.gui||Date.now());}
+function shareFile(){
+  if(!navigator.canShare||!window.File)return null;
+  var txt=jsonText(),f;
+  try{f=new File([txt],baseName()+'.json',{type:'application/json'});if(navigator.canShare({files:[f]}))return f;}catch(e){}
+  try{f=new File([txt],baseName()+'.txt',{type:'text/plain'});if(navigator.canShare({files:[f]}))return f;}catch(e){}
+  return null;
+}
+function ready(){
+  var m=$('send_msg');
+  if(!(S.info.ten||'').trim()){m.className='msg bad';m.textContent='Xin ghi họ tên ở phần "Thông tin người kiểm định" (đầu trang) trước khi lấy file kết quả.';$('i_ten').focus();return false;}
+  if(!countDone()&&!S.y&&!S.th){m.className='msg bad';m.textContent='Chưa có mục nào được chấm.';return false;}
+  S.gui=Date.now();lsSet();
+  $('json_wrap').hidden=false;$('json_out').value=jsonText();
+  return true;
+}
+function download(name,text,type){
+  var blob=new Blob([text],{type:type});var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);if(a.parentNode)a.parentNode.removeChild(a);},5000);
+}
+function copyText(text,ta,msgEl,okText){
+  function fallback(){ta.focus();ta.select();msgEl.className='msg';msgEl.textContent='Đã chọn sẵn toàn bộ nội dung. Nhấn Ctrl+C (trên điện thoại: chạm giữ rồi chọn Sao chép).';}
+  try{navigator.clipboard.writeText(text).then(function(){msgEl.className='msg ok';msgEl.textContent=okText;},fallback);}catch(e){fallback();}
+}
+
+/* ---------- sự kiện ---------- */
+var bulkPending=null,delPending=null;
+document.addEventListener('click',function(e){
+  var a=e.target.closest?e.target.closest('a[data-goto]'):null;
+  if(a){e.preventDefault();var m=IT[a.getAttribute('data-goto')];if(m){var d=m.el.closest('details');if(d)d.open=true;m.el.scrollIntoView({block:'center'});var ta=RV[m.id].querySelector('.gt');ta.hidden=false;ta.focus();}return;}
+  var t=e.target.closest?e.target.closest('button'):null;if(!t)return;
+  var rv=t.closest('.rv');
+  if(rv){
+    var id=rv.getAttribute('data-for');var o=S.r[id]||(S.r[id]={});
+    if(t.classList.contains('sb')){var s=+t.getAttribute('data-s');o.s=(o.s===s?0:s);changed(id);}
+    else if(t.classList.contains('lb')){var l=t.getAttribute('data-l');o.l=(o.l===l?'':l);changed(id);}
+    else if(t.classList.contains('cb')){var ta=rv.querySelector('.gt');ta.hidden=!ta.hidden;t.setAttribute('aria-expanded',String(!ta.hidden));if(!ta.hidden)ta.focus();if(!o.s&&!o.l&&!o.g)delete S.r[id];}
+    return;
+  }
+  var act=t.getAttribute('data-act');if(!act)return;
+  if(act==='bulk'){
+    var grp=t.closest('.grp');var cf=t.parentNode.querySelector('.bulk-cf');
+    var ids=[];var els=grp.querySelectorAll('.it[data-id]');for(var i=0;i<els.length;i++){var x=els[i].getAttribute('data-id');if(!(S.r[x]&&S.r[x].s))ids.push(x);}
+    cf.hidden=false;
+    if(!ids.length){cf.textContent='Mọi mục trong nhóm đã được chấm.';return;}
+    bulkPending=ids;cf.innerHTML='Chấm 4 cho '+ids.length+' mục chưa chấm? <button type="button" class="btn" data-act="bulk-yes">Xác nhận</button> <button type="button" class="btn" data-act="bulk-no">Thôi</button>';
+    return;
+  }
+  if(act==='bulk-yes'||act==='bulk-no'){
+    var cf2=t.closest('.bulk-cf');
+    if(act==='bulk-yes'&&bulkPending){bulkPending.forEach(function(x){var oo=S.r[x]||(S.r[x]={});oo.s=4;paint(x);});touch();progress();}
+    bulkPending=null;cf2.hidden=true;cf2.innerHTML='';return;
+  }
+  var msg=$('send_msg');
+  if(act==='dl'){if(!ready())return;download(baseName()+'.json',jsonText(),'application/json');msg.className='msg ok';msg.textContent='Đã tạo file '+baseName()+'.json. Mở Zalo hoặc email, đính kèm file này (thư mục Tải về / Downloads) và gửi cho BS. Lê Kim Long.';return;}
+  if(act==='share'){
+    if(!ready())return;var f=shareFile();
+    if(!f){msg.className='msg bad';msg.textContent='Máy này không chia sẻ file trực tiếp được. Xin bấm "Tải file JSON".';return;}
+    navigator.share({files:[f],title:'Kết quả kiểm định sổ theo dõi Whipple'}).then(function(){msg.className='msg ok';msg.textContent='Đã chuyển file sang ứng dụng bạn chọn.';},function(err){if(err&&err.name==='AbortError'){msg.className='msg';msg.textContent='Đã hủy chia sẻ.';}else{msg.className='msg bad';msg.textContent='Chưa chia sẻ được. Xin bấm "Tải file JSON".';}});
+    return;
+  }
+  if(act==='copy'){if(!ready())return;copyText(jsonText(),$('json_out'),msg,'Đã sao chép nội dung kết quả. Có thể dán thẳng vào tin nhắn Zalo hoặc email gửi BS. Lê Kim Long.');return;}
+  if(act==='reset'){$('reset_cf').hidden=false;return;}
+  if(act==='reset-no'){$('reset_cf').hidden=true;return;}
+  if(act==='reset-yes'){S={info:{},r:{},y:'',th:'',t:0,gui:0};lsSet();paintAll();$('reset_cf').hidden=true;$('json_wrap').hidden=true;msg.className='msg';msg.textContent='Đã xóa bản nháp trên máy này.';return;}
+  if(act==='imp-add')return impAdd();
+  if(act==='del'){delPending=t.getAttribute('data-key');renderAgg();return;}
+  if(act==='del-no'){delPending=null;renderAgg();return;}
+  if(act==='del-yes'){AG=AG.filter(function(p){return p.key!==delPending;});delPending=null;agSave();renderAgg();return;}
+  if(act==='clear-all'){$('clear_cf').hidden=false;return;}
+  if(act==='clear-no'){$('clear_cf').hidden=true;return;}
+  if(act==='clear-yes'){AG=[];agSave();$('clear_cf').hidden=true;renderAgg();$('agg_msg').textContent='Đã xóa danh sách kết quả trên máy này.';return;}
+  if(act==='csv')return exportCsv();
+});
+document.addEventListener('input',function(e){
+  var el=e.target;
+  if(el.classList&&el.classList.contains('gt')){var id=el.closest('.rv').getAttribute('data-for');var o=S.r[id]||(S.r[id]={});o.g=el.value;el.parentNode.querySelector('.cb').classList.toggle('has',!!el.value);if(!o.s&&!o.l&&!o.g)delete S.r[id];touch();progressSoon();return;}
+  var k=el.getAttribute&&el.getAttribute('data-info');
+  if(k){S.info[k]=el.value;touch();return;}
+  if(el.id==='y_chung'){S.y=el.value;touch();return;}
+  if(el.id==='y_thieu'){S.th=el.value;touch();return;}
+});
+document.addEventListener('change',function(e){var el=e.target;if(el.id==='agg_self'||el.id==='agg_filter'||el.id==='agg_sec')renderAgg();});
+var pTimer=null;function progressSoon(){clearTimeout(pTimer);pTimer=setTimeout(progress,400);}
+
+/* ---------- tổng hợp nhiều file ---------- */
+function b64dec(b){var bin=atob(b),by=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)by[i]=bin.charCodeAt(i);return new TextDecoder().decode(by);}
+function agLoad(){try{var s=window.localStorage.getItem(AGG_KEY);if(s){var a=JSON.parse(s);if(isArr(a))AG=a;}}catch(e){}}
+function agSave(){try{window.localStorage.setItem(AGG_KEY,JSON.stringify(AG));}catch(e){$('agg_msg').textContent='Không lưu được danh sách trên máy này; kết quả vẫn hiện cho tới khi đóng trang.';}}
+function normalize(o){
+  if(!o||typeof o!=='object')throw new Error('Không đọc được nội dung.');
+  var info,r={},y,th,gui;
+  if(o.loai==='kiem-dinh-whipple'&&o.diem&&typeof o.diem==='object'){
+    info=o.nguoi_kiem_dinh||{};
+    Object.keys(o.diem).forEach(function(id){var e=o.diem[id]||{};r[id]={s:+e.s||0,l:e.l||'',g:e.g||''};});
+    y=o.y_kien_chung||'';th=o.con_thieu||'';gui=Date.parse(o.gui_luc)||0;
+  }else if(o.v===1&&o.r&&typeof o.r==='object'){
+    info=o.info||{};
+    Object.keys(o.r).forEach(function(id){var e=o.r[id];if(isArr(e))e={s:e[0],l:e[1],g:e[2]};e=e||{};r[id]={s:+e.s||0,l:e.l||'',g:e.g||''};});
+    y=o.y||'';th=o.th||'';gui=o.gui||o.t||0;
+  }else throw new Error('Không phải file kết quả kiểm định Whipple.');
+  var inf={};['ten','hv','noi','cn','nam','pd'].forEach(function(k){inf[k]=info[k]==null?'':String(info[k]);});
+  return {key:slug(inf.ten)+'|'+gui,info:inf,r:r,y:String(y),th:String(th),gui:gui};
+}
+function parseText(txt){
+  var s=String(txt||'').replace(/^﻿/,'').trim();
+  var i=s.indexOf('KDW1:');
+  if(i>=0){var c=s.slice(i+5).replace(/\s+/g,'');return JSON.parse(b64dec(c));}
+  return JSON.parse(s);
+}
+function addResult(obj,src){var n=normalize(obj);n.src=src;for(var i=0;i<AG.length;i++){if(AG[i].key===n.key){AG[i]=n;return;}}AG.push(n);}
+function impAdd(){
+  var box=$('imp_in'),m=$('agg_msg');
+  try{addResult(parseText(box.value),'dán');agSave();box.value='';renderAgg();m.className='msg ok';m.textContent='Đã thêm.';}
+  catch(e){m.className='msg bad';m.textContent=(e&&e.message&&e.message.indexOf('Whipple')>=0)?e.message:'Nội dung dán vào không phải kết quả kiểm định hợp lệ.';}
+}
+function people(){
+  var all=AG.slice();
+  if($('agg_self').checked&&countDone())all.push({key:'self',src:'máy này',info:S.info,r:S.r,y:S.y,th:S.th,gui:S.gui||S.t});
+  return all;
+}
+function stats(R){
+  var out={};
+  ITEMS.forEach(function(m){
+    var c=[0,0,0,0,0],n=0,lv={C:0,M:0,B:0},cm=[];
+    R.forEach(function(p){var o=p.r[m.id];if(!o)return;if(o.s>=1&&o.s<=4){c[o.s]++;n++;}if(m.isVar&&o.l&&o.l!==m.lv&&lv[o.l]!=null)lv[o.l]++;if(o.g)cm.push({who:p.info.ten||'(không tên)',g:o.g,s:o.s||0});});
+    out[m.id]={c:c,n:n,icvi:n?(c[3]+c[4])/n:null,lv:lv,cm:cm,lvChange:lv.C+lv.M+lv.B};
+  });
+  return out;
+}
+function renderAgg(){
+  if($('tong-hop').hidden)return;
+  var R=people(),N=R.length,thr=N<=5?1:0.78,st=stats(R);
+  var secs={},tot=[],below=0,ncm=0;
+  ITEMS.forEach(function(m){var x=st[m.id];if(x.n){tot.push(x.icvi);(secs[m.sec]||(secs[m.sec]=[])).push(x.icvi);if(x.icvi<thr-1e-9)below++;}ncm+=x.cm.length;});
+  function avg(a){if(!a||!a.length)return null;var s=0;a.forEach(function(v){s+=v;});return s/a.length;}
+  var sAll=avg(tot);
+  var k='<div class="kpi"><b>'+N+'</b><span>người kiểm định</span></div>';
+  k+='<div class="kpi"><b>'+(sAll==null?'–':fmt2(sAll))+'</b><span>S-CVI/Ave toàn bộ</span></div>';
+  k+='<div class="kpi"><b>'+below+'</b><span>mục có I-CVI dưới ngưỡng '+fmt2(thr)+'</span></div>';
+  k+='<div class="kpi"><b>'+ncm+'</b><span>ghi chú</span></div>';
+  Object.keys(SEC_NAME).forEach(function(s){var v=avg(secs[s]);k+='<div class="kpi"><b>'+(v==null?'–':fmt2(v))+'</b><span>S-CVI/Ave phần '+s+' · '+SEC_NAME[s]+'</span></div>';});
+  $('agg_kpis').innerHTML=k;
+
+  var ph='<table><tr><th>Họ tên</th><th>Chức danh</th><th>Nơi công tác</th><th>Chuyên ngành</th><th class="c">Năm KN</th><th class="c">Ca PD</th><th class="c">Đã chấm</th><th>Gửi lúc</th><th></th></tr>';
+  if(!R.length)ph+='<tr><td colspan="9" class="note">Chưa có kết quả nào. Bấm "Chọn file kết quả" để đọc các file JSON nhận được.</td></tr>';
+  var names={};R.forEach(function(p){var nm=(p.info.ten||'').trim().toLowerCase();if(nm)names[nm]=(names[nm]||0)+1;});
+  R.forEach(function(p){
+    var cnt=0;Object.keys(p.r).forEach(function(id){if(p.r[id]&&p.r[id].s)cnt++;});
+    var nm=(p.info.ten||'').trim(),dup=nm&&names[nm.toLowerCase()]>1;
+    ph+='<tr><td>'+esc(nm||'(không tên)')+(dup?' <span class="flag">trùng tên</span>':'')+(p.key==='self'?' <span class="flag">máy này</span>':'')+'</td><td>'+esc(p.info.hv)+'</td><td>'+esc(p.info.noi)+'</td><td>'+esc(p.info.cn)+'</td><td class="c num">'+esc(p.info.nam)+'</td><td class="c num">'+esc(p.info.pd)+'</td><td class="c num">'+cnt+'</td><td class="num">'+(p.gui?hhmm(p.gui):'–')+'</td><td>';
+    if(p.key==='self')ph+='';
+    else if(delPending===p.key)ph+='<button type="button" class="btn" data-act="del-yes">Bỏ khỏi danh sách</button> <button type="button" class="btn" data-act="del-no">Thôi</button>';
+    else ph+='<button type="button" class="btn" data-act="del" data-key="'+esc(p.key)+'">Bỏ</button>';
+    ph+='</td></tr>';
+  });
+  $('agg_people').innerHTML=ph+'</table>';
+
+  var f=$('agg_filter').value,sf=$('agg_sec').value;
+  var rows=ITEMS.filter(function(m){
+    var x=st[m.id];if(sf&&m.sec!==sf)return false;
+    if(f==='all')return true;
+    if(f==='cmt')return x.cm.length>0;
+    if(f==='lv')return x.lvChange>0;
+    return (x.n&&x.icvi<thr-1e-9)||x.cm.length>0||x.lvChange>0;
+  });
+  rows.sort(function(a,b){var A=st[a.id],B=st[b.id];var ia=A.icvi==null?2:A.icvi,ib=B.icvi==null?2:B.icvi;return ia-ib;});
+  var t='<table><tr><th>Mục</th><th class="c">n</th><th class="c">Điểm 1·2·3·4</th><th class="c">I-CVI</th><th>Đề xuất đổi cấp</th><th>Ghi chú</th></tr>';
+  if(!rows.length)t+='<tr><td colspan="6" class="note">Không có mục nào theo bộ lọc này.</td></tr>';
+  rows.forEach(function(m){
+    var x=st[m.id];
+    var ic=x.icvi==null?'–':'<span class="'+(x.icvi<thr-1e-9?'bad-t':'ok-t')+'">'+fmt2(x.icvi)+'</span>';
+    var lv=m.isVar?(x.lvChange?['C','M','B'].filter(function(k2){return x.lv[k2];}).map(function(k2){return LVN[k2]+' '+x.lv[k2];}).join(' · '):'<span class="note">giữ '+(m.lv==='C'?'cốt lõi':'mở rộng')+'</span>'):'';
+    var cm=x.cm.map(function(c){return '<div class="cm"><b>'+esc(c.who)+'</b>'+(c.s?' ('+c.s+')':'')+': '+esc(c.g)+'</div>';}).join('');
+    t+='<tr><td><span class="note">Phần '+m.sec+'</span><br>'+esc(m.title)+'</td><td class="c num">'+x.n+'</td><td class="c"><span class="dist"><i>'+x.c[1]+'</i><i>'+x.c[2]+'</i><i>'+x.c[3]+'</i><i>'+x.c[4]+'</i></span></td><td class="c num">'+ic+'</td><td>'+lv+'</td><td>'+cm+'</td></tr>';
+  });
+  $('agg_items').innerHTML=t+'</table>';
+
+  var g='';R.forEach(function(p){if(p.y||p.th){g+='<div class="panel"><h4>'+esc(p.info.ten||'(không tên)')+'</h4>'+(p.th?'<p><b>Còn thiếu:</b> '+esc(p.th)+'</p>':'')+(p.y?'<p><b>Ý kiến chung:</b> '+esc(p.y)+'</p>':'')+'</div>';}});
+  $('agg_general').innerHTML=g||'<p class="note">Chưa có ý kiến chung.</p>';
+}
+function csvCell(v){v=v==null?'':String(v);return /[",\n;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
+function exportCsv(){
+  var R=people(),st=stats(R);
+  var head=['phan','ma_muc','tieu_de','cap_de_xuat','n','d1','d2','d3','d4','icvi','doi_C','doi_M','doi_Bo','ghi_chu'];
+  R.forEach(function(p,i){head.push('R'+(i+1)+'_'+slug(p.info.ten));});
+  var lines=[head.map(csvCell).join(',')];
+  ITEMS.forEach(function(m){
+    var x=st[m.id];
+    var row=[m.sec,m.id,m.title,m.isVar?m.lv:'',x.n,x.c[1],x.c[2],x.c[3],x.c[4],x.icvi==null?'':x.icvi.toFixed(3),x.lv.C,x.lv.M,x.lv.B,x.cm.map(function(c){return c.who+': '+c.g;}).join(' | ')];
+    R.forEach(function(p){var o=p.r[m.id];row.push(o&&o.s?o.s:'');});
+    lines.push(row.map(csvCell).join(','));
+  });
+  download('kiem-dinh-whipple_tong-hop_'+ymd(Date.now())+'.csv','﻿'+lines.join('\r\n'),'text/csv');
+  $('csv_msg').textContent='Đã tạo file CSV (mở bằng Excel hoặc Google Sheets).';
+}
+$('agg_files').addEventListener('change',function(e){
+  var inp=e.target,fs=inp.files;if(!fs||!fs.length)return;
+  var left=fs.length,ok=0,bad=[];
+  function done(){left--;if(left)return;agSave();renderAgg();var m=$('agg_msg');m.className=bad.length?'msg bad':'msg ok';m.textContent='Đã đọc '+ok+' file.'+(bad.length?' Không đọc được: '+bad.join(', ')+'.':'');inp.value='';}
+  Array.prototype.forEach.call(fs,function(f){
+    var rd=new FileReader();
+    rd.onload=function(){try{addResult(parseText(rd.result),f.name);ok++;}catch(err){bad.push(f.name);}done();};
+    rd.onerror=function(){bad.push(f.name);done();};
+    rd.readAsText(f);
+  });
+});
+function route(){
+  var on=location.hash==='#tong-hop';
+  $('tong-hop').hidden=!on;$('tab_th').hidden=!on;
+  if(on){renderAgg();setTimeout(function(){$('tong-hop').scrollIntoView();},0);}
+}
+
+/* ---------- khởi động ---------- */
+renderDict();
+enhance();
+lsGet();
+agLoad();
+paintAll();
+(function(){try{var f=new File(['{}'],'a.json',{type:'application/json'});var g=new File(['{}'],'a.txt',{type:'text/plain'});if(navigator.canShare&&(navigator.canShare({files:[f]})||navigator.canShare({files:[g]}))){$('btn_share').hidden=false;$('btn_dl').className='btn';}}catch(e){}})();
+window.addEventListener('hashchange',route);
+route();
+})();
+</script>
+</body>
+</html>
